@@ -52,7 +52,8 @@ public:
   segment_register_table() : Cod_Seg(0), Stack_Seg(0), Data_Seg(0), CodLIM(0), StackLIM(0), DataLIM(0), Cod_acc(3), Stack_acc(3), Data_acc(3){}
 
   void mostrar_tabela(){
-    cout<<"Seletor        End Base        End Limite        nivel Acesso"<<endl;
+    cout<<"Seletor        End Base        End Limite        Nivel Acesso"<<endl;
+    cout<<"--------------------------------------------------------------"<<endl;
     cout<< CS<<"              "<<Cod_Seg<<"               "<< CodLIM<<"                 "<<Cod_acc<< endl;
     cout<< SS<<"              "<<Stack_Seg<<"               "<< StackLIM<<"                 "<<Stack_acc<< endl;
     cout<< DS<<"              "<<Data_Seg<<"               "<< DataLIM<<"                 "<<Data_acc<< endl;
