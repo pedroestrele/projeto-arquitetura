@@ -23,17 +23,39 @@ public:
   int CS;
   int SS;
   int DS;
-  int ES;
-  int FS;
-  int GS;
-  reg_seletores_segmento() : CS(0), SS(0), DS(0), ES(0), FS(0), GS(0) {}
-  reg_seletores_segmento(int CS, int SS, int DS, int ES, int FS, int GS){
+  reg_seletores_segmento() : CS(0), SS(0), DS(0){}
+  reg_seletores_segmento(int CS, int SS, int DS ){
     this->CS = CS;
     this->SS = SS;
     this->DS = DS;
-    this->ES = ES;
-    this->FS = FS;
-    this->GS = GS;
+    }
+  void mostrar_dados(){
+    cout << "CS: " << CS << endl;
+    cout  << "SS: " << SS << endl;
+    cout  << "DS: " << DS << endl;
+    }
+  };
+class segment_register_table{
+public:
+  int CS;
+  int SS;
+  int DS;
+  int Cod_Seg;
+  int Stack_Seg;
+  int Data_Seg;
+  int CodLIM;
+  int StackLIM;
+  int DataLIM;
+  int Cod_acc;
+  int Stack_acc;
+  int Data_acc;
+  segment_register_table() : Cod_Seg(0), Stack_Seg(0), Data_Seg(0), CodLIM(0), StackLIM(0), DataLIM(0), Cod_acc(3), Stack_acc(3), Data_acc(3){}
+
+  void mostrar_tabela(){
+    cout<<"Seletor        End Base        End Limite        nivel Acesso"<<endl;
+    cout<< CS<<"              "<<Cod_Seg<<"               "<< CodLIM<<"                 "<<Cod_acc<< endl;
+    cout<< SS<<"              "<<Stack_Seg<<"               "<< StackLIM<<"                 "<<Stack_acc<< endl;
+    cout<< DS<<"              "<<Data_Seg<<"               "<< DataLIM<<"                 "<<Data_acc<< endl;
     }
 
   };
@@ -54,15 +76,15 @@ public:
     }
   };
 
-map <int,string> memoria;
+
 class arquiteturaX86{
 public:
   reg_gerais gerais;
   reg_seletores_segmento seletores_segmento;
   reg_offset offset;
-  string flag;
+  int flag;
   map <int, string> memoria;
-  arquiteturaX86(reg_gerais gerais, reg_seletores_segmento seletores_segmento, reg_offset offset, string flag, map <int, string> memoria){
+  arquiteturaX86(reg_gerais gerais, reg_seletores_segmento seletores_segmento, reg_offset offset, int flag, map <int, string> memoria){
     this->gerais = gerais;
     this->seletores_segmento = seletores_segmento;
     this->offset = offset;
@@ -70,7 +92,67 @@ public:
     this->memoria = memoria;
     
     }
-  
+
   };
+
+reg_seletores_segmento entradaderegistradores(reg_seletores_segmento  seletores_segmento){
+  cout<<"Digite os seletores de cada segmento:";
+  cout<<"\nCS: ";
+  cin>>seletores_segmento.CS;
+  cout<<"\nSS: ";
+  cin>>seletores_segmento.SS;
+  cout<<"\nDS: ";
+  cin>>seletores_segmento.DS;
+  return seletores_segmento;
+  }
+
+  segment_register_table entradadetabela(segment_register_table tabela){
+    cout<<"\nDigite os valores de inicio de cada segmento da tabela de segmentos:";
+    cout<<"\nCod_Seg: ";
+    cin>>tabela.Cod_Seg;
+    cout<<"\nStack_Seg: ";
+    cin>>tabela.Stack_Seg;
+    tabela.CodLIM=tabela.Stack_Seg -1;
+    cout<<"\nData_Seg: ";
+    cin>>tabela.Data_Seg;
+    tabela.StackLIM=tabela.Data_Seg -1;
+    cout<<"\ndigite o valor limite do segmento de dados";
+    cin>>tabela.DataLIM;
+    return tabela;
+    }
+
+
+
 int main(){
+  reg_gerais gerais;
+  reg_seletores_segmento seletores_segmento;
+  reg_offset offset;
+  map <int, string> memoria;
+  segment_register_table tabela;
+  //seletores_segmento = entradadedados(seletores_segmento);
+  //seletores_segmento.mostrar_dados();
+
+  tabela.CS = seletores_segmento.CS;
+  tabela.SS = seletores_segmento.SS;
+  tabela.DS = seletores_segmento.DS;
+  //tabela=entradadetabela(tabela);
+  //tabela.mostrar_tabela();
+
+  
+  cout<<"digite o endereço inicial do segmento EIP: ";
+  cin>>offset.EIP;
+
+  cout<<"digite o endereço inicial do segmento EBP: ";
+  cin>>offset.EBP;
+  
+
+  string instrucao;
+  cout<<"digite a instrução que será simulada"<<endl;
+  cin>>instrucao;
+  if (instrucao=="add"){
+    int END1, END2;
+    cin>>END1>>END2;
+    
+    }
+  
 }
