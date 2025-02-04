@@ -49,6 +49,9 @@ public:
   int Cod_acc;
   int Stack_acc;
   int Data_acc;
+
+  int tamanho = 20;
+
   segment_register_table() : Cod_Seg(0), Stack_Seg(0), Data_Seg(0), CodLIM(0), StackLIM(0), DataLIM(0), Cod_acc(3), Stack_acc(3), Data_acc(3){}
 
 void mostrar_tabela(){
