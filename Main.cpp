@@ -173,6 +173,22 @@ public:
 
 
 arquiteturaX86 add(arquiteturaX86 PC){
+  PC.offset.EIP+=2;
+  
+  
+  int END1, END2;
+  cin>>END1>>END2;
+  cout<<" o que estaria presente no endereço 1?";
+  string valor1;
+  cin>>valor1;
+  
+  cout<<" o que estaria presente no endereço 2?";
+  string valor2;
+  cin>>valor2;
+  PC.memoria[END1]=valor1;
+  PC.memoria[END2]=valor2;
+  
+  
 
   return PC;
   }
