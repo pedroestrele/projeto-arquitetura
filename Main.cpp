@@ -49,28 +49,26 @@ public:
   int Cod_acc;
   int Stack_acc;
   int Data_acc;
-
-  int tamanho = 20;
-
   segment_register_table() : Cod_Seg(0), Stack_Seg(0), Data_Seg(0), CodLIM(0), StackLIM(0), DataLIM(0), Cod_acc(3), Stack_acc(3), Data_acc(3){}
 
 void mostrar_tabela(){
-      cout << "| " << left << setw(tamanho) << "Seletor" << "| " << left << setw(tamanho) << "End base" << "| " << left << setw(tamanho) << "End limite" << "| " 
-      << left << setw(tamanho) << "Nível de Acesso" << " |" << endl;
-      
-      cout << string(4 * (tamanho + 2) + 1, '-') << endl;
-      
-      cout<< "| " << left << setw(tamanho) << CS << "| " << left << setw(tamanho) << Cod_Seg << "| " << left << setw(tamanho) << CodLIM << "| "  
-      << left << setw(tamanho) << Cod_acc << "| " << endl;
-      
-      cout << "| " << left << setw(tamanho) << SS << "| "<< left << setw(tamanho) << Stack_Seg << "| " << left << setw(tamanho) << StackLIM << "| " 
-      << left << setw(tamanho) << Stack_acc << "| " << endl;
-      
-      cout << "| " << left << setw(tamanho) << DS << "| " << left << setw(tamanho) << Data_Seg << "| " << left << setw(tamanho) << DataLIM << "| " 
-      << left << setw(tamanho) << Data_acc << "| " << endl;
-      }
+  int tamanho = 20;
+  cout << "| " << left << setw(tamanho) << "Seletor" << "| " << left << setw(tamanho) << "End base" << "| " << left << setw(tamanho) << "End limite" << "| " 
+  << left << setw(tamanho) << "Nível de Acesso" << " |" << endl;
 
-    };
+  cout << string(4 * (tamanho + 2) + 1, '-') << endl;
+
+  cout<< "| " << left << setw(tamanho) << CS << "| " << left << setw(tamanho) << Cod_Seg << "| " << left << setw(tamanho) << CodLIM << "| "  
+  << left << setw(tamanho) << Cod_acc << "| " << endl;
+
+  cout << "| " << left << setw(tamanho) << SS << "| "<< left << setw(tamanho) << Stack_Seg << "| " << left << setw(tamanho) << StackLIM << "| " 
+  << left << setw(tamanho) << Stack_acc << "| " << endl;
+
+  cout << "| " << left << setw(tamanho) << DS << "| " << left << setw(tamanho) << Data_Seg << "| " << left << setw(tamanho) << DataLIM << "| " 
+  << left << setw(tamanho) << Data_acc << "| " << endl;
+  }
+
+  };
 class reg_offset{
 public:
   int EIP;
@@ -88,24 +86,7 @@ public:
     }
   };
 
-
-class arquiteturaX86{
-public:
-  reg_gerais gerais;
-  reg_seletores_segmento seletores_segmento;
-  reg_offset offset;
-  int flag;
-  map <int, string> memoria;
-  arquiteturaX86(reg_gerais gerais, reg_seletores_segmento seletores_segmento, reg_offset offset, int flag, map <int, string> memoria){
-    this->gerais = gerais;
-    this->seletores_segmento = seletores_segmento;
-    this->offset = offset;
-    this->flag = flag;
-    this->memoria = memoria;
-    
-    }
-
-  };
+ 
 
 reg_seletores_segmento entradaderegistradores(reg_seletores_segmento  seletores_segmento){
   cout<<"Digite os seletores de cada segmento:";
@@ -124,15 +105,77 @@ reg_seletores_segmento entradaderegistradores(reg_seletores_segmento  seletores_
     cin>>tabela.Cod_Seg;
     cout<<"\nStack_Seg: ";
     cin>>tabela.Stack_Seg;
+    if(tabela.Cod_Seg>=tabela.Stack_Seg){
+      cout<<"\nGPF: O endereço de inicio do segmento de código deve ser menor que o endereço de inicio do segmento de pilha.";
+      }
     tabela.CodLIM=tabela.Stack_Seg -1;
     cout<<"\nData_Seg: ";
     cin>>tabela.Data_Seg;
+    if(tabela.Data_Seg<=tabela.Stack_Seg){
+      cout<<"\nGPF: O endereço de inicio do segmento de pilha deve ser menor que o endereço de inicio do segmento de dados.";
+      }
     tabela.StackLIM=tabela.Data_Seg -1;
     cout<<"\ndigite o valor limite do segmento de dados";
     cin>>tabela.DataLIM;
     return tabela;
     }
 
+bool verifica_GPF(segment_register_table tabela, reg_offset offset){
+  if(tabela.Cod_Seg+offset.EIP > tabela.CodLIM){
+    cout<<"GPF: endereço linear do segmento maior que o limite do segmento de código"<<endl;
+    return true;
+    }
+  if(tabela.Stack_Seg+offset.EBP > tabela.StackLIM){
+    cout<<"GPF: endereço linear do segmento maior que o limite do segmento de pilha"<<endl;
+    return true;
+    }
+    return false;
+    }
+
+reg_offset entrada_offset(reg_offset offset,segment_register_table tabela){
+  cout<<"digite o endereço inicial do segmento EIP: ";
+  cin>>offset.EIP;
+  if(verifica_GPF(tabela,offset)){
+    exit(2);
+    }
+
+  cout<<"digite o endereço inicial do segmento EBP: ";
+  cin>>offset.EBP;
+  if(verifica_GPF(tabela,offset)){
+      exit(2);
+      }
+
+  offset.ESP=offset.EBP;
+
+  return(offset);
+  }
+
+class arquiteturaX86{
+public:
+  reg_gerais gerais;
+  reg_seletores_segmento seletores_segmento;
+  reg_offset offset;
+  segment_register_table tabela;
+  int flag;
+  map <int, string> memoria;
+  arquiteturaX86(reg_gerais gerais, reg_seletores_segmento seletores_segmento, reg_offset offset, int flag, map <int, string> memoria, segment_register_table tabela){
+    this->gerais = gerais;
+    this->seletores_segmento = seletores_segmento;
+    this->offset = offset;
+    this->flag = flag;
+    this->memoria = memoria;
+    this->tabela=tabela;
+    }
+};
+
+
+
+
+
+arquiteturaX86 add(arquiteturaX86 PC){
+
+  return PC;
+  }
 
 
 int main(){
@@ -141,30 +184,23 @@ int main(){
   reg_offset offset;
   map <int, string> memoria;
   segment_register_table tabela;
-  //seletores_segmento = entradadedados(seletores_segmento);
+  seletores_segmento = entradaderegistradores(seletores_segmento);
   //seletores_segmento.mostrar_dados();
 
   tabela.CS = seletores_segmento.CS;
   tabela.SS = seletores_segmento.SS;
   tabela.DS = seletores_segmento.DS;
-  //tabela=entradadetabela(tabela);
-  //tabela.mostrar_tabela();
-
+  tabela=entradadetabela(tabela);
+  tabela.mostrar_tabela();
+  offset=entrada_offset(offset, tabela);
+  arquiteturaX86 PC(gerais, seletores_segmento, offset, 0, memoria, tabela);
   
-  cout<<"digite o endereço inicial do segmento EIP: ";
-  cin>>offset.EIP;
-
-  cout<<"digite o endereço inicial do segmento EBP: ";
-  cin>>offset.EBP;
-  
-
   string instrucao;
   cout<<"digite a instrução que será simulada"<<endl;
-  cin>>instrucao;
-  if (instrucao=="add"){
-    int END1, END2;
-    cin>>END1>>END2;
-    
-    }
   
+  cin>>instrucao;
+ 
+  if (instrucao=="add"){
+    PC=add(PC);
+    }
 }
