@@ -51,15 +51,23 @@ public:
   int Data_acc;
   segment_register_table() : Cod_Seg(0), Stack_Seg(0), Data_Seg(0), CodLIM(0), StackLIM(0), DataLIM(0), Cod_acc(3), Stack_acc(3), Data_acc(3){}
 
-  void mostrar_tabela(){
-    cout<<"Seletor        End Base        End Limite        Nivel Acesso"<<endl;
-    cout<<"--------------------------------------------------------------"<<endl;
-    cout<< CS<<"              "<<Cod_Seg<<"               "<< CodLIM<<"                 "<<Cod_acc<< endl;
-    cout<< SS<<"              "<<Stack_Seg<<"               "<< StackLIM<<"                 "<<Stack_acc<< endl;
-    cout<< DS<<"              "<<Data_Seg<<"               "<< DataLIM<<"                 "<<Data_acc<< endl;
-    }
+void mostrar_tabela(){
+      cout << "| " << left << setw(tamanho) << "Seletor" << "| " << left << setw(tamanho) << "End base" << "| " << left << setw(tamanho) << "End limite" << "| " 
+      << left << setw(tamanho) << "Nível de Acesso" << " |" << endl;
+      
+      cout << string(4 * (tamanho + 2) + 1, '-') << endl;
+      
+      cout<< "| " << left << setw(tamanho) << CS << "| " << left << setw(tamanho) << Cod_Seg << "| " << left << setw(tamanho) << CodLIM << "| "  
+      << left << setw(tamanho) << Cod_acc << "| " << endl;
+      
+      cout << "| " << left << setw(tamanho) << SS << "| "<< left << setw(tamanho) << Stack_Seg << "| " << left << setw(tamanho) << StackLIM << "| " 
+      << left << setw(tamanho) << Stack_acc << "| " << endl;
+      
+      cout << "| " << left << setw(tamanho) << DS << "| " << left << setw(tamanho) << Data_Seg << "| " << left << setw(tamanho) << DataLIM << "| " 
+      << left << setw(tamanho) << Data_acc << "| " << endl;
+      }
 
-  };
+    };
 class reg_offset{
 public:
   int EIP;
