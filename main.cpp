@@ -2,6 +2,7 @@
 #include "registradores.h"
 #include "tabela.h"
 #include "arquiteturaX86.h"
+#include "endereco.h"
 
 using namespace std;
 
@@ -10,7 +11,7 @@ int main(){
 	RegGerais gerais;
 	RegSeletorSegmentos seletores_segmento;
 	RegOffsets offset;
-	map <int, string> memoria;
+	map <long, string> memoria;
 
 	seletores_segmento.obter_entrada();
 	TabelaDescritorSegmento tabela = TabelaDescritorSegmento(seletores_segmento);
@@ -29,9 +30,12 @@ int main(){
 
 	if (instrucao=="add"){
 		//coletar todos os dados necesários no main
-		int END1,END2;
-		cin>>END1>>END2;
-		PC.add(END1,END2);//calculos,barramentos e etc na função
+		string end_hex1, end_hex2;
+		cin>>end_hex1>>end_hex2;
+		
+		Endereco<32> END1(end_hex1), END2(end_hex2);
+
+		PC.add(END1.toLong(),END2.toLong());//calculos,barramentos e etc na função
 	}
 
 	return 0;

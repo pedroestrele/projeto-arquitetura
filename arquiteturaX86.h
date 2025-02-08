@@ -8,28 +8,22 @@ using namespace std;
 class ArquiteturaX86{
   public:
     RegGerais gerais;
-    RegSeletorSegmentos seletores_segmento;
-    RegOffsets offset;
+    RegSeletorSegmentos& seletores_segmento;
+    RegOffsets& offset;
     TabelaDescritorSegmento tabela;
     int flag;
-    map <int, string> memoria;
+    map <long, string> memoria;
 
-	ArquiteturaX86(RegGerais gerais, RegSeletorSegmentos seletores_segmento, RegOffsets offset, int flag, map <int, string> memoria, TabelaDescritorSegmento tabela){
-        this->gerais = gerais;
-        this->seletores_segmento = seletores_segmento;
-        this->offset = offset;
-        this->flag = flag;
-        this->memoria = memoria;
-        this->tabela=tabela;
-	}
+  ArquiteturaX86(RegGerais gerais, RegSeletorSegmentos& seletores_segmento, RegOffsets& offset, int flag, map <long, string> memoria, TabelaDescritorSegmento tabela)
+    : gerais(gerais), seletores_segmento(seletores_segmento), offset(offset), flag(flag), memoria(memoria), tabela(tabela) {}
 
-	void add(int END1,int END2);
+  void add(long END1, long END2);
 	void inc();
 
 };
 
-void ArquiteturaX86::add(int END1,int END2){
-  this->offset.EIP+=2;
+void ArquiteturaX86::add(long END1, long END2){
+  this->offset.EIP.increment(2);
 
 
   cout<<" o que estaria presente no endereço 1?";
