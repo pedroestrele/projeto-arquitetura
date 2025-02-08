@@ -28,6 +28,7 @@ class ArquiteturaX86{
 
 };
 void ArquiteturaX86::mostrar_dados(){
+    cout<<endl;
     cout<<"Registradores Gerais: "<<endl;
     cout<<"EAX: "<<gerais.EAX<<endl;
     cout<<"EBX: "<<gerais.EBX<<endl;
@@ -39,21 +40,86 @@ void ArquiteturaX86::mostrar_dados(){
     cout<<"ESP: "<<offset.ESP<<endl;
     cout<<"ESI: "<<offset.ESI<<endl;
     cout<<"EDI: "<<offset.EDI<<endl;
+    cout<<endl;
   }
 
 void ArquiteturaX86::add(int END1,int END2){
-  this->offset.EIP+=4;
-
-
-  cout<<" o que estaria presente no endereço 1?";
+   cout<<"O que estaria presente no endereço 1?";
   string valor1;
   cin>>valor1;
 
-  cout<<" o que estaria presente no endereço 2?";
+  cout<<"O que estaria presente no endereço 2?";
   string valor2;
   cin>>valor2;
   this->memoria[END1]=valor1;
   this->memoria[END2]=valor2;
+
+  
+  cout<<offset.EIP<<endl;
+  cout<<"-------->"<<endl;
+  cout<<"BUS END"<<endl;
+  cout<<endl;
+  cout<<"ADD"<<endl;
+  cout<<"<--------"<<endl;
+  cout<<"BUS DATA"<<endl;
+  
+  this->offset.EIP+=4;
+  
+  mostrar_dados(); 
+  
+  cout<<offset.EIP<<endl;
+  cout<<"-------->"<<endl;
+  cout<<"BUS END"<<endl;
+  cout<<endl;
+  cout<<END1<<endl;
+  cout<<"<--------"<<endl;
+  cout<<"BUS DATA"<<endl;
+  
+  this->offset.EDI=END1; 
+  this->offset.EIP+=4;
+
+  mostrar_dados();
+
+  cout<<offset.EIP<<endl;
+  cout<<"-------->"<<endl;
+  cout<<"BUS END"<<endl;
+  cout<<endl;
+  cout<<END2<<endl;
+  cout<<"<--------"<<endl;
+  cout<<"BUS DATA"<<endl;
+  this->offset.ESI=END2;
+  this->offset.EIP+=4;
+  
+  mostrar_dados();
+
+  cout<<offset.EDI<<endl;
+  cout<<"-------->"<<endl;
+  cout<<"BUS END"<<endl;
+  cout<<endl;
+  cout<<memoria[END1]<<endl;
+  cout<<"<--------"<<endl;
+  cout<<"BUS DATA"<<endl;
+  gerais.EAX=stoi(memoria[END1]);
+
+  mostrar_dados();
+
+  cout<<offset.ESI<<endl;
+  cout<<"-------->"<<endl;
+  cout<<"BUS END"<<endl;
+  cout<<endl;
+  cout<<memoria[END2]<<endl;
+  cout<<"<--------"<<endl;
+  cout<<"BUS DATA"<<endl;
+  gerais.EAX+=(stoi(memoria[END2]));
+
+  mostrar_dados();
+  cout<<gerais.EAX<<endl;
+  cout<<"-------->"<<endl;
+  cout<<"BUS DATA"<<endl;
+  memoria[offset.EDI]=to_string(gerais.EAX);
+  
+
+
 
 
 }
