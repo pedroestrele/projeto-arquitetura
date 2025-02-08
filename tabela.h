@@ -28,7 +28,14 @@ class TabelaDescritorSegmento {
 		DescritorSegmento code_segm;
 		DescritorSegmento stack_segm;
 		DescritorSegmento data_segm;
+		
 	TabelaDescritorSegmento() : code_segm(DescritorSegmento()), stack_segm(DescritorSegmento()), data_segm(DescritorSegmento()){}
+
+	TabelaDescritorSegmento(RegSeletorSegmentos seletores_segmento) {
+		this->code_segm.seletor = seletores_segmento.CS;
+    this->stack_segm.seletor = seletores_segmento.SS;
+    this->data_segm.seletor = seletores_segmento.DS;
+	}
 
 	void mostrar_tabela(){
 		int tamanho = 20;
@@ -42,34 +49,34 @@ class TabelaDescritorSegmento {
 		data_segm.imprimirLinhaTabela(tamanho);
 	}
 
-	bool verifica_GPF(RegOffsets offset){}
+	bool verifica_GPF(RegOffsets offset);
 	void entrada_de_tabela();
-	void entrada_de_registradores(RegSeletorSegmentos &seletores_segmento);
+	void criar_descritores(RegSeletorSegmentos seletores_segmento);
 	void entrada_offset(RegOffsets &offset);
 
 };
 
 void TabelaDescritorSegmento::entrada_de_tabela(){
-	cout<<"\nDigite os valores de inicio de cada segmento da tabela de segmentos:";
+	cout<<"\nDigite os endereços de inicio de cada segmento da tabela de segmentos:";
 	cout<<"\nCod_Seg: ";
 	cin>>this->code_segm.end_base;
-	cout<<"\nStack_Seg: ";
+	cout<<"Stack_Seg: ";
 	cin>>this->stack_segm.end_base;
 
 	if(this->code_segm.end_base >= this->stack_segm.end_base){
-		cout<<"\nGPF: O endereço de inicio do segmento de código deve ser menor que o endereço de inicio do segmento de pilha.";
+		cout<< "GPF: O endereço de inicio do segmento de código deve ser menor que o endereço de inicio do segmento de pilha.\n";
 	}
 
 	this->code_segm.end_lim = this->stack_segm.end_base -1;
-	cout<<"\nData_Seg: ";
+	cout<<"Data_Seg: ";
 	cin>>this->data_segm.end_base;
 
 	if(this->data_segm.end_base <= this->stack_segm.end_base){
-		cout<<"\nGPF: O endereço de inicio do segmento de pilha deve ser menor que o endereço de inicio do segmento de dados.";
+		cout<<"GPF: O endereço de inicio do segmento de pilha deve ser menor que o endereço de inicio do segmento de dados.\n";
 	}
 
 	this->stack_segm.end_lim = this->data_segm.end_base -1;
-	cout<<"\nDigite o valor limite do segmento de dados";
+	cout<<"Digite o endereço limite do segmento de dados: ";
 	cin>>this->data_segm.end_lim;
 }
 
@@ -77,7 +84,7 @@ bool TabelaDescritorSegmento:: verifica_GPF(RegOffsets offset){
   	if(code_segm.ehGPF(offset.EIP)){
       cout<<"GPF: endereço linear do segmento maior que o limite do segmento de código"<<endl;
       return true;
-	}
+		}
 
   	if(stack_segm.ehGPF(offset.EBP)){
       cout<<"GPF: endereço linear do segmento maior que o limite do segmento de pilha"<<endl;
@@ -85,32 +92,4 @@ bool TabelaDescritorSegmento:: verifica_GPF(RegOffsets offset){
     }
 
     return false;
-}
-  
-void TabelaDescritorSegmento::entrada_de_registradores(RegSeletorSegmentos &seletores_segmento){
-    cout<<"Digite os seletores de cada segmento:";
-    cout<<"\nCS: ";
-    cin>>seletores_segmento.CS;
-    cout<<"\nSS: ";
-    cin>>seletores_segmento.SS;
-    cout<<"\nDS: ";
-    cin>>seletores_segmento.DS;
-}
-
-void TabelaDescritorSegmento::entrada_offset(RegOffsets &offset){
-    cout<<"digite o endereço inicial do segmento EIP: ";
-    cin>>offset.EIP;
-
-    if(verifica_GPF(offset)){
-		exit(2);
-    }
-
-    cout<<"digite o endereço inicial do segmento EBP: ";
-    cin>>offset.EBP;
-
-    if(verifica_GPF(offset)){
-        exit(2);
-    }
-
-    offset.ESP = offset.EBP;
 }

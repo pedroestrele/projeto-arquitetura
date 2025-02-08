@@ -11,21 +11,20 @@ int main(){
 	RegSeletorSegmentos seletores_segmento;
 	RegOffsets offset;
 	map <int, string> memoria;
-	SegmentRegisterTable tabela;
-	tabela.entrada_de_registradores(seletores_segmento);
-	//seletores_segmento.mostrar_dados();
 
-	tabela.CS = seletores_segmento.CS;
-	tabela.SS = seletores_segmento.SS;
-	tabela.DS = seletores_segmento.DS;
+	seletores_segmento.obter_entrada();
+	TabelaDescritorSegmento tabela = TabelaDescritorSegmento(seletores_segmento);
+
 	tabela.entrada_de_tabela();
 	tabela.mostrar_tabela();
-	tabela.entrada_offset(offset);
+
+	offset.obter_entrada();
+	//tabela.verifica_GPF(offset);
+
 	ArquiteturaX86 PC = ArquiteturaX86(gerais, seletores_segmento, offset, 0, memoria, tabela);
 
 	string instrucao;
-	cout<<"digite a instrução que será simulada"<<endl;
-
+	cout<<"Digite a instrução que será simulada"<<endl;
 	cin>>instrucao;
 
 	if (instrucao=="add"){
@@ -34,4 +33,6 @@ int main(){
 		cin>>END1>>END2;
 		PC.add(END1,END2);//calculos,barramentos e etc na função
 	}
+
+	return 0;
 }

@@ -11,10 +11,10 @@ class RegGerais{
         int EDX;
     RegGerais() : EAX(0), EBX(0), ECX(0), EDX(0) {}
     RegGerais(int EAX, int EBX, int ECX, int EDX){
-    this->EAX = EAX;
-    this->EBX = EBX;
-    this->ECX = ECX;
-    this->EDX = EDX;
+      this->EAX = EAX;
+      this->EBX = EBX;
+      this->ECX = ECX;
+      this->EDX = EDX;
     }
 
 };
@@ -34,8 +34,18 @@ class RegSeletorSegmentos{
       this->DS = DS;
     }
 
+    void obter_entrada(){
+        cout<<"Digite os seletores de cada segmento:";
+        cout<<"\nCS: ";
+        cin>>this->CS;
+        cout<<"SS: ";
+        cin>>this->SS;
+        cout<<"DS: ";
+        cin>>this->DS;
+    }
+
     void mostrar_dados(){
-      cout << "CS: " << CS << endl;
+      cout  << "CS: " << CS << endl;
       cout  << "SS: " << SS << endl;
       cout  << "DS: " << DS << endl;
     }
@@ -59,6 +69,24 @@ class RegOffsets{
 		this->ESI = ESI;
 		this->EDI = EDI;
 	}
+
+    void obter_entrada(){
+        cout<<"Digite o endereço inicial do segmento EIP: ";
+        cin>>this->EIP;
+
+        /*if(verifica_GPF(this)){
+            exit(2);
+        }*/
+
+        cout<<"Digite o endereço inicial do segmento EBP: ";
+        cin>>this->EBP;
+
+        /*if(verifica_GPF(this)){
+            exit(2);
+        }*/
+
+        this->ESP = this->EBP;
+    }
 
   };
 

@@ -10,11 +10,11 @@ class ArquiteturaX86{
     RegGerais gerais;
     RegSeletorSegmentos seletores_segmento;
     RegOffsets offset;
-    SegmentRegisterTable tabela;
+    TabelaDescritorSegmento tabela;
     int flag;
     map <int, string> memoria;
 
-	ArquiteturaX86(RegGerais gerais, RegSeletorSegmentos seletores_segmento, RegOffsets offset, int flag, map <int, string> memoria, SegmentRegisterTable tabela){
+	ArquiteturaX86(RegGerais gerais, RegSeletorSegmentos seletores_segmento, RegOffsets offset, int flag, map <int, string> memoria, TabelaDescritorSegmento tabela){
         this->gerais = gerais;
         this->seletores_segmento = seletores_segmento;
         this->offset = offset;
