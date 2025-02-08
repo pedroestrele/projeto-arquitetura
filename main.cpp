@@ -35,7 +35,7 @@ int main(){
 		
 		Endereco<32> END1(end_hex1), END2(end_hex2);
 
-		PC.add(END1.toLong(),END2.toLong());//calculos,barramentos e etc na função
+		PC.add(END1,END2);//calculos,barramentos e etc na função
 	}
 
 	return 0;

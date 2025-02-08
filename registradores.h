@@ -19,6 +19,14 @@ class RegGerais{
       this->EDX = EDX;
     }
 
+    void mostrar_dados(){
+        cout<<"Registradores Gerais: "<<endl;
+        cout<<"EAX: "<<EAX<<endl;
+        cout<<"EBX: "<<EBX<<endl;
+        cout<<"ECX: "<<ECX<<endl;
+        cout<<"EDX: "<<EDX<<endl;
+    }
+
 };
 
 ///////////SELETORES DE SEGMENTO///////////
@@ -87,6 +95,15 @@ class RegOffsets{
         cin>>ebp_value;
         this->EBP = Endereco<32>(ebp_value);
         this->ESP = Endereco<32>(ebp_value);
+    }
+
+    void mostrar_dados(){
+        cout<<endl<<"Offset: "<<endl;
+        cout  << "EIP: " << this->EIP.end_hex << endl;
+        cout  << "EBP: " << this->EBP.end_hex << endl;
+        cout  << "ESP: " << this->ESP.end_hex << endl;
+        cout  << "ESI: " << this->ESI.end_hex << endl;
+        cout  << "EDI: " << this->EDI.end_hex << endl;
     }
 
 };

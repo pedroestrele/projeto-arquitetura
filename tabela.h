@@ -32,9 +32,9 @@ class TabelaDescritorSegmento {
 	TabelaDescritorSegmento() : code_segm(DescritorSegmento()), stack_segm(DescritorSegmento()), data_segm(DescritorSegmento()){}
 
 	TabelaDescritorSegmento(RegSeletorSegmentos& seletores_segmento) {
-		this->code_segm.seletor = seletores_segmento.CS.toLong();
-    this->stack_segm.seletor = seletores_segmento.SS.toLong();
-    this->data_segm.seletor = seletores_segmento.DS.toLong();
+		this->code_segm.seletor = seletores_segmento.CS.end_long;
+    this->stack_segm.seletor = seletores_segmento.SS.end_long;
+    this->data_segm.seletor = seletores_segmento.DS.end_long;
 	}
 
 	void mostrar_tabela(){
@@ -81,12 +81,12 @@ void TabelaDescritorSegmento::entrada_de_tabela(){
 }
 
 bool TabelaDescritorSegmento:: verifica_GPF(RegOffsets offset){
-  	if(code_segm.ehGPF(offset.EIP.toLong())){
+  	if(code_segm.ehGPF(offset.EIP.end_long)){
       cout<<"GPF: endereço linear do segmento maior que o limite do segmento de código"<<endl;
       return true;
 		}
 
-  	if(stack_segm.ehGPF(offset.EBP.toLong())){
+  	if(stack_segm.ehGPF(offset.EBP.end_long)){
       cout<<"GPF: endereço linear do segmento maior que o limite do segmento de pilha"<<endl;
       return true;
     }
