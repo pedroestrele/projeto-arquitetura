@@ -22,14 +22,27 @@ class ArquiteturaX86{
         this->memoria = memoria;
         this->tabela=tabela;
 	}
-
-	void add(int END1,int END2);
-	void inc();
+    void mostrar_dados();
+    void add(int END1,int END2);
+    void inc();
 
 };
+void ArquiteturaX86::mostrar_dados(){
+    cout<<"Registradores Gerais: "<<endl;
+    cout<<"EAX: "<<gerais.EAX<<endl;
+    cout<<"EBX: "<<gerais.EBX<<endl;
+    cout<<"ECX: "<<gerais.ECX<<endl;
+    cout<<"EDX: "<<gerais.EDX<<endl;
+    cout<<endl<<"Offset: "<<endl;
+    cout<<"EIP: "<<offset.EIP<<endl;
+    cout<<"EBP: "<<offset.EBP<<endl;
+    cout<<"ESP: "<<offset.ESP<<endl;
+    cout<<"ESI: "<<offset.ESI<<endl;
+    cout<<"EDI: "<<offset.EDI<<endl;
+  }
 
 void ArquiteturaX86::add(int END1,int END2){
-  this->offset.EIP+=2;
+  this->offset.EIP+=4;
 
 
   cout<<" o que estaria presente no endereço 1?";
@@ -43,8 +56,4 @@ void ArquiteturaX86::add(int END1,int END2){
   this->memoria[END2]=valor2;
 
 
-}
-
-void ArquiteturaX86::inc(){
-    this->offset;
 }
