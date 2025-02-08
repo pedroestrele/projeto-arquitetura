@@ -4,21 +4,31 @@
 using namespace std;
 #pragma once 
 
-class SegmentRegisterTable {
+class DescritorSegmento {
 	public:
-		int CS;
-		int SS;
-		int DS;
-		int Cod_Seg;
-		int Stack_Seg;
-		int Data_Seg;
-		int CodLIM;
-		int StackLIM;
-		int DataLIM;
-		int Cod_acc;
-		int Stack_acc;
-		int Data_acc;
-	SegmentRegisterTable() : Cod_Seg(0), Stack_Seg(0), Data_Seg(0), CodLIM(0), StackLIM(0), DataLIM(0), Cod_acc(3), Stack_acc(3), Data_acc(3){}
+		int seletor;
+		int end_base;
+		int end_lim;
+		int segm_acc;
+	DescritorSegmento() : seletor(0), end_base(0), end_lim(0), segm_acc(3){}
+
+	void imprimirLinhaTabela(int tamanho){
+		cout<< "| " << left << setw(tamanho) << this->seletor << "| " << left << setw(tamanho) << this->end_base << "| " << left << setw(tamanho) << this->end_lim << "| "  
+		<< left << setw(tamanho) << this->segm_acc << "| " << endl;
+	}
+
+	bool ehGPF(int offset){
+		return this->end_base + offset > this->end_lim;
+	}
+
+};
+
+class TabelaDescritorSegmento {
+	public:
+		DescritorSegmento code_segm;
+		DescritorSegmento stack_segm;
+		DescritorSegmento data_segm;
+	TabelaDescritorSegmento() : code_segm(DescritorSegmento()), stack_segm(DescritorSegmento()), data_segm(DescritorSegmento()){}
 
 	void mostrar_tabela(){
 		int tamanho = 20;
@@ -27,54 +37,49 @@ class SegmentRegisterTable {
 
 		cout << string(4 * (tamanho + 2) + 1, '-') << endl;
 
-		cout<< "| " << left << setw(tamanho) << CS << "| " << left << setw(tamanho) << Cod_Seg << "| " << left << setw(tamanho) << CodLIM << "| "  
-		<< left << setw(tamanho) << Cod_acc << "| " << endl;
-
-		cout << "| " << left << setw(tamanho) << SS << "| "<< left << setw(tamanho) << Stack_Seg << "| " << left << setw(tamanho) << StackLIM << "| " 
-		<< left << setw(tamanho) << Stack_acc << "| " << endl;
-
-		cout << "| " << left << setw(tamanho) << DS << "| " << left << setw(tamanho) << Data_Seg << "| " << left << setw(tamanho) << DataLIM << "| " 
-		<< left << setw(tamanho) << Data_acc << "| " << endl;
+		code_segm.imprimirLinhaTabela(tamanho);
+		stack_segm.imprimirLinhaTabela(tamanho);
+		data_segm.imprimirLinhaTabela(tamanho);
 	}
 
-	bool verifica_GPF(RegOffsets offset);
+	bool verifica_GPF(RegOffsets offset){}
 	void entrada_de_tabela();
 	void entrada_de_registradores(RegSeletorSegmentos &seletores_segmento);
 	void entrada_offset(RegOffsets &offset);
 
 };
 
-void SegmentRegisterTable::entrada_de_tabela(){
+void TabelaDescritorSegmento::entrada_de_tabela(){
 	cout<<"\nDigite os valores de inicio de cada segmento da tabela de segmentos:";
 	cout<<"\nCod_Seg: ";
-	cin>>this->Cod_Seg;
+	cin>>this->code_segm.end_base;
 	cout<<"\nStack_Seg: ";
-	cin>>this->Stack_Seg;
+	cin>>this->stack_segm.end_base;
 
-	if(this->Cod_Seg >= this->Stack_Seg){
+	if(this->code_segm.end_base >= this->stack_segm.end_base){
 		cout<<"\nGPF: O endereço de inicio do segmento de código deve ser menor que o endereço de inicio do segmento de pilha.";
 	}
 
-	this->CodLIM = this->Stack_Seg -1;
+	this->code_segm.end_lim = this->stack_segm.end_base -1;
 	cout<<"\nData_Seg: ";
-	cin>>this->Data_Seg;
+	cin>>this->data_segm.end_base;
 
-	if(this->Data_Seg <= this->Stack_Seg){
+	if(this->data_segm.end_base <= this->stack_segm.end_base){
 		cout<<"\nGPF: O endereço de inicio do segmento de pilha deve ser menor que o endereço de inicio do segmento de dados.";
 	}
 
-	this->StackLIM = this->Data_Seg -1;
-	cout<<"\ndigite o valor limite do segmento de dados";
-	cin>>this->DataLIM;
+	this->stack_segm.end_lim = this->data_segm.end_base -1;
+	cout<<"\nDigite o valor limite do segmento de dados";
+	cin>>this->data_segm.end_lim;
 }
 
-bool SegmentRegisterTable::verifica_GPF(RegOffsets offset){
-  	if(this->Cod_Seg+offset.EIP > this->CodLIM){
+bool TabelaDescritorSegmento:: verifica_GPF(RegOffsets offset){
+  	if(code_segm.ehGPF(offset.EIP)){
       cout<<"GPF: endereço linear do segmento maior que o limite do segmento de código"<<endl;
       return true;
 	}
 
-  	if(this->Stack_Seg+offset.EBP > this->StackLIM){
+  	if(stack_segm.ehGPF(offset.EBP)){
       cout<<"GPF: endereço linear do segmento maior que o limite do segmento de pilha"<<endl;
       return true;
     }
@@ -82,7 +87,7 @@ bool SegmentRegisterTable::verifica_GPF(RegOffsets offset){
     return false;
 }
   
-void SegmentRegisterTable::entrada_de_registradores(RegSeletorSegmentos &seletores_segmento){
+void TabelaDescritorSegmento::entrada_de_registradores(RegSeletorSegmentos &seletores_segmento){
     cout<<"Digite os seletores de cada segmento:";
     cout<<"\nCS: ";
     cin>>seletores_segmento.CS;
@@ -92,7 +97,7 @@ void SegmentRegisterTable::entrada_de_registradores(RegSeletorSegmentos &seletor
     cin>>seletores_segmento.DS;
 }
 
-void SegmentRegisterTable::entrada_offset(RegOffsets &offset){
+void TabelaDescritorSegmento::entrada_offset(RegOffsets &offset){
     cout<<"digite o endereço inicial do segmento EIP: ";
     cin>>offset.EIP;
 

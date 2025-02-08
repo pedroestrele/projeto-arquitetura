@@ -11,10 +11,10 @@ class RegGerais{
         int EDX;
     RegGerais() : EAX(0), EBX(0), ECX(0), EDX(0) {}
     RegGerais(int EAX, int EBX, int ECX, int EDX){
-        this->EAX = EAX;
-        this->EBX = EBX;
-        this->ECX = ECX;
-        this->EDX = EDX;
+    this->EAX = EAX;
+    this->EBX = EBX;
+    this->ECX = ECX;
+    this->EDX = EDX;
     }
 
 };
