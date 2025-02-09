@@ -99,7 +99,7 @@ void ArquiteturaX86::add (Endereco<32> &END1, Endereco<32> &END2)
 
 	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
 	acessarMemoria (end_linear, END1.end_hex);
-	this->offset.mostrar_dados();
+	
 	this->offset.EDI.end_hex = END1.end_hex;
 	this->offset.EIP.increment (4);
 	this->offset.mostrar_dados();
