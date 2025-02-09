@@ -54,7 +54,7 @@ class TabelaDescritorSegmento
 
 	void mostrar_tabela()
 	{
-		int tamanho = 20;
+		int tamanho = 12;
 		cout << "| " << left << setw (tamanho) << "Seletor"
 		     << "| " << left << setw (tamanho) << "End base"
 		     << "| " << left << setw (tamanho) << "End limite"
