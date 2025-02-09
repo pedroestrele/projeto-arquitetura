@@ -23,7 +23,7 @@ Desenvolva um programa que realize os cálculos de endereçamento e apresente o 
 * [X] Instrução POP
 * [ ] Instrução XCHG
 * [X] Instrução ADD
-* [ ] Instrução SUB
+* [X] Instrução SUB
 * [ ] Instrução MUL
 * [X] Instrução INC
 * [X] Instrução DEC
