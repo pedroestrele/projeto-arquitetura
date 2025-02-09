@@ -37,6 +37,7 @@ int main(){
 
 		PC.add(END1,END2);//calculos,barramentos e etc na função
 	}
+	
 	if (instrucao=="inc" or instrucao=="INC"){
 		string end_hex;
     		cout<<"Digite o endereço: ";
@@ -44,6 +45,15 @@ int main(){
     		Endereco<32> END(end_hex);
 
     		PC.inc(END);
-    }
+    	}
+	
+	if (instrucao=="dec" or instrucao=="DEC"){
+    		string end_hex;
+   	 	cout<<"Digite o endereço: ";
+    		cin>>end_hex;
+		Endereco<32> END(end_hex);
+    
+    		PC.dec(END);
+    	}
 	return 0;
 }
