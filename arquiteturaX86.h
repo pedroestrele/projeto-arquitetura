@@ -124,7 +124,7 @@ void ArquiteturaX86::add (Endereco<32> &END1, Endereco<32> &END2)
     this->gerais.mostrar_dados();
 
     end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
-    inserirMemoria (this->offset.EDI, this->gerais.EAX);
+    inserirMemoria (end_linear, this->gerais.EAX);
     memoria[offset.EDI.toLong()] = to_string (gerais.EAX);
 }
 
@@ -482,7 +482,7 @@ void ArquiteturaX86::sub(Endereco<32> &END1, Endereco<32> &END2)
     this->gerais.mostrar_dados();
 
     end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
-    inserirMemoria (this->offset.EDI, this->gerais.EAX);
+    inserirMemoria (end_linear, this->gerais.EAX);
     memoria[offset.EDI.toLong()] = to_string (gerais.EAX);
 }
 void ArquiteturaX86::mul(Endereco<32> &END1, Endereco<32> &END2)
@@ -525,7 +525,7 @@ void ArquiteturaX86::mul(Endereco<32> &END1, Endereco<32> &END2)
     this->gerais.mostrar_dados();
 
     end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
-    inserirMemoria (this->offset.EDI, this->gerais.EAX);
+    inserirMemoria (end_linear, this->gerais.EAX);
     memoria[offset.EDI.toLong()] = to_string (gerais.EAX);
 }
 void ArquiteturaX86::neg(Endereco<32> &END){
