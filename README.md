@@ -24,10 +24,10 @@ Desenvolva um programa que realize os cálculos de endereçamento e apresente o 
 * [X] Instrução XCHG
 * [X] Instrução ADD
 * [X] Instrução SUB
-* [ ] Instrução MUL
+* [X] Instrução MUL
 * [X] Instrução INC
 * [X] Instrução DEC
-* [ ] Instrução NEG
+* [X] Instrução NEG
 * [ ] Instrução AND
 * [ ] Instrução OR
 * [ ] Instrução XOR
