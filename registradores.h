@@ -1,5 +1,7 @@
 #include "endereco.h"
+#include "hex.h"
 #include <bits/stdc++.h>
+#include <sstream>
 
 using namespace std;
 #pragma once
@@ -8,27 +10,27 @@ using namespace std;
 class RegGerais
 {
   public:
-	int EAX;
-	int EBX;
-	int ECX;
-	int EDX;
-	RegGerais() : EAX (0), EBX (0), ECX (0), EDX (0) {}
+	HexNumber EAX;
+	HexNumber EBX;
+	HexNumber ECX;
+	HexNumber EDX;
+	RegGerais() : EAX (HexNumber()), EBX (HexNumber()), ECX (HexNumber()), EDX (HexNumber()) {}
 
-	RegGerais (int EAX, int EBX, int ECX, int EDX)
+	RegGerais (string EAX, string EBX, string ECX, string EDX)
 	{
-		this->EAX = EAX;
-		this->EBX = EBX;
-		this->ECX = ECX;
-		this->EDX = EDX;
+		this->EAX.value = EAX;
+		this->EBX.value = EBX;
+		this->ECX.value = ECX;
+		this->EDX.value = EDX;
 	}
 
 	void mostrar_dados()
 	{
-		cout << "Registradores Gerais: " << endl;
-		cout << "EAX: " << EAX << endl;
-		cout << "EBX: " << EBX << endl;
-		cout << "ECX: " << ECX << endl;
-		cout << "EDX: " << EDX << endl;
+		cout << "\nRegistradores Gerais: " << endl;
+		cout << "EAX: " << EAX.value << endl;
+		cout << "EBX: " << EBX.value << endl;
+		cout << "ECX: " << ECX.value << endl;
+		cout << "EDX: " << EDX.value << endl;
 	}
 };
 
