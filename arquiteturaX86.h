@@ -83,3 +83,34 @@ void ArquiteturaX86::add(Endereco<32>& END1, Endereco<32>& END2){
 
 }
 
+void ArquiteturaX86::inc(Endereco<32>& END) {
+    this->offset.EIP.increment(2);
+
+    cout<< "O que estaria presente no endereço? ";
+    string valor;
+    cin>>valor;
+    cout<<endl;
+    this->memoria[END.end_long]=valor;
+
+    acessarMemoria(this->offset.EIP, "INC");
+    this->offset.EIP.increment(4);
+    acessarMemoria(this->offset.EIP, END.end_hex);
+    //this->offset.mostrar_dados();
+
+    this->offset.EDI.end_hex = END.end_hex;
+    this->offset.EIP.increment(4);
+    //this->offset.mostrar_dados();
+
+    acessarMemoria(this->offset.EDI, memoria[END.end_long]);
+    gerais.EAX = stoi(memoria[END.end_long]);
+    //this->gerais.mostrar_dados();
+
+    gerais.EAX+=1;
+    //this->gerais.mostrar_dados();
+
+    inserirMemoria(this->gerais.EAX);
+    memoria[offset.EDI.end_long]=to_string(gerais.EAX);
+    this->offset.mostrar_dados();
+    this->gerais.mostrar_dados();
+}
+
