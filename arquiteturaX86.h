@@ -67,32 +67,35 @@ class ArquiteturaX86
 	}
 
 	Endereco<32>
-	obterEnderecoLinear (DescritorSegmento &descritor, Endereco<32> &end)
-	{
-		Endereco<32> end_linear (descritor.end_base.end_hex);
-		end_linear.increment (end.toLong());
+    obterEnderecoLinear (DescritorSegmento &descritor, Endereco<32> &end)
+    {
+        Endereco<32> end_linear (descritor.end_base.end_hex);
+        end_linear.increment (end.toLong());
 
-		if (descritor.ehGPF (end_linear)) {
-			cout << endl << "GPF!" << endl;
-		}
+        if (descritor.ehGPF (end_linear)) {
+            cout << endl << "GPF!" << endl;
+            exit(4);
+        }
 
-		return end_linear;
-	}
+        return end_linear;
+    }
 };
 
 void ArquiteturaX86::add (Endereco<32> &END1, Endereco<32> &END2)
 {
-	this->offset.EIP.increment (2);
+	  
 
-	Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
-	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
+    Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
+    this->memoria[end_linear.toLong()] = obterValorAlocado (1);
 
-	end_linear = obterEnderecoLinear (tabela.data_segm, END2);
-	this->memoria[end_linear.toLong()] = obterValorAlocado (2);
+    end_linear = obterEnderecoLinear (tabela.data_segm, END2);
+    this->memoria[end_linear.toLong()] = obterValorAlocado (2);
 
-	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, "ADD");
-	this->offset.EIP.increment (4);
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, "ADD");
+    this->offset.EIP.increment (2);
+
+    offset.mostrar_dados();
 
 	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
 	acessarMemoria (end_linear, END1.end_hex);
