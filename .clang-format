@@ -8,13 +8,13 @@ BreakBeforeBraces: Linux
 BreakBeforeTernaryOperators: 'true'
 BreakStringLiterals: 'true'
 IndentCaseLabels: 'true'
-IndentWidth: '4'
+IndentWidth: '2'
 KeepEmptyLinesAtTheStartOfBlocks: 'false'
 Language: Cpp
 SortIncludes: 'true'
 SpaceAfterTemplateKeyword: 'true'
 SpaceBeforeAssignmentOperators: 'true'
 SpaceBeforeParens: NonEmptyParentheses
-TabWidth: '4'
+TabWidth: '2'
 UseTab: ForIndentation
 ...
