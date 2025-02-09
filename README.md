@@ -33,7 +33,7 @@ Desenvolva um programa que realize os cálculos de endereçamento e apresente o 
 * [ ] Instrução XOR
 * [ ] Instrução NOT
 * [X] Instrução CMP
-* [ ] Instrução JMP
+* [X] Instrução JMP
 * [ ] Instrução Jxx
 * [ ] Instrução CALL
 * [ ] Instrução RET

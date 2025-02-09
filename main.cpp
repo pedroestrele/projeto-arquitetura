@@ -6,11 +6,11 @@
 
 using namespace std;
 
-enum instrucoes { ADD, INC, DEC, MOV, PUSH, POP, CMP, JMP };
+enum instrucoes { ADD, INC, DEC, MOV, PUSH, POP, CMP, JMP, XCHG };
 
 map<string, instrucoes> instrucao_map = {
     {"add", ADD},   {"inc", INC}, {"dec", DEC}, {"mov", MOV},
-    {"push", PUSH}, {"pop", POP}, {"cmp", CMP}, {"jmp", JMP}};
+    {"push", PUSH}, {"pop", POP}, {"cmp", CMP}, {"jmp", JMP}, {"xchg", XCHG}};
 
 int main()
 {
@@ -64,6 +64,17 @@ int main()
 
 			Endereco<32> END (end_hex);
 			PC.pop (END); // calculos,barramentos e etc na função
+		} break;
+		case XCHG: {
+			// coletar todos os dados necesários no main
+			string end_hex1, end_hex2;
+			cout << "Digite o endereco 1: ";
+			cin >> end_hex1;
+			cout << "Digite o endereco 2: ";
+			cin >> end_hex2;
+
+			Endereco<32> END1 (end_hex1), END2 (end_hex2);
+			PC.xchg (END1, END2); // calculos,barramentos e etc na função
 		} break;
 		case ADD: {
 			// coletar todos os dados necesários no main
