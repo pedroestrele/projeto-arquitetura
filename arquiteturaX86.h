@@ -439,3 +439,46 @@ void ArquiteturaX86::xchg (Endereco<32> &END1, Endereco<32> &END2)
 	inserirMemoria (end_linear, this->gerais.EAX); // Salvando valor apontado por END1 na posição apontada por END2
 	memoria[end_linear.toLong()] = to_string (gerais.EAX);
 }
+void ArquiteturaX86::sub(Endereco<32> &END1, Endereco<32> &END2)
+{
+
+
+    Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
+    this->memoria[end_linear.toLong()] = obterValorAlocado (1);
+
+    end_linear = obterEnderecoLinear (tabela.data_segm, END2);
+    this->memoria[end_linear.toLong()] = obterValorAlocado (2);
+
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, "SUB");
+    this->offset.EIP.increment (2);
+
+    offset.mostrar_dados();
+        
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, END1.end_hex);
+
+    this->offset.EDI.end_hex = END1.end_hex;
+    this->offset.EIP.increment (4);
+    this->offset.mostrar_dados();
+
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, END2.end_hex);
+    this->offset.ESI.end_hex = END2.end_hex;
+    this->offset.EIP.increment (4);
+    this->offset.mostrar_dados();
+
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
+    acessarMemoria (end_linear, memoria[end_linear.toLong()]);
+    gerais.EAX = stoi (memoria[end_linear.toLong()]);
+    this->gerais.mostrar_dados();
+
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.ESI);
+    acessarMemoria (end_linear, memoria[END2.toLong()]);
+    gerais.EAX -= stoi (memoria[end_linear.toLong()]);
+    this->gerais.mostrar_dados();
+
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
+    inserirMemoria (this->offset.EDI, this->gerais.EAX);
+    memoria[offset.EDI.toLong()] = to_string (gerais.EAX);
+}
