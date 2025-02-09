@@ -42,6 +42,8 @@ public:
 	void sub (Endereco<32> &END1, Endereco<32> &END2);
   	void neg (Endereco<32> &END);
 	void AND (Endereco<32> &DST, Endereco<32> &SRC);
+	void OR (Endereco<32> &DST, Endereco<32> &SRC);
+	void XOR (Endereco<32> &DST, Endereco<32> &SRC);
   
 	void acessarMemoria (Endereco<32> &end, string retorno)
 	{
@@ -628,4 +630,17 @@ void ArquiteturaX86::AND (Endereco<32> &DST,Endereco<32> &SRC){
 	inserirMemoria(end_lin,this->gerais.EAX);
 
 
+};
+
+void ArquiteturaX86::OR (Endereco<32> &DST,Endereco<32> &SRC){
+
+
+
+};
+
+
+void ArquiteturaX86::XOR (Endereco<32> &DST,Endereco<32> &SRC){
+
+
+	
 };
