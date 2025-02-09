@@ -38,6 +38,7 @@ class ArquiteturaX86
     void jmp (Endereco<32> &END);
     void mul (Endereco<32> &END1, Endereco<32> &END2);
     void sub (Endereco<32> &END1, Endereco<32> &END2);
+    void neg (Endereco<32> &END);
 
     void acessarMemoria (Endereco<32> &end, string retorno)
     {
@@ -527,3 +528,28 @@ void ArquiteturaX86::mul(Endereco<32> &END1, Endereco<32> &END2)
     inserirMemoria (this->offset.EDI, this->gerais.EAX);
     memoria[offset.EDI.toLong()] = to_string (gerais.EAX);
 }
+void ArquiteturaX86::neg(Endereco<32> &END){
+    Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END);
+    this->memoria[end_linear.toLong()] = obterValorAlocado (1);
+
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria(end_linear, "NEG");
+    this->offset.EIP.increment (2);
+    offset.mostrar_dados();
+
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria(end_linear, END.end_hex);
+    this->offset.EDI.end_hex = END.end_hex;
+    this->offset.EIP.increment (4);
+    this->offset.mostrar_dados();
+
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
+    acessarMemoria(end_linear, memoria[end_linear.toLong()]);
+    gerais.EAX = -stoi (memoria[end_linear.toLong()]);
+    this->gerais.mostrar_dados();
+    
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
+    inserirMemoria (end_linear, this->gerais.EAX);
+    memoria[offset.EDI.toLong()] = to_string (gerais.EAX);
+        
+    }
