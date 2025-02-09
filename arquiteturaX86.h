@@ -28,6 +28,7 @@ class ArquiteturaX86{
   void push(Endereco<32>& END1);
   void pop(Endereco<32>& END1);
   void cmp(Endereco<32>& END1, Endereco<32>& END2);
+  void jmp(Endereco<32>& END);
 
   void acessarMemoria(Endereco<32>& end, string retorno){
     cout<<endl<<end.end_hex<<endl;
@@ -287,13 +288,13 @@ void ArquiteturaX86::cmp(Endereco<32>& END1, Endereco<32>& END2) {
     this->offset.EIP.increment(4);
     this->offset.mostrar_dados();
 
-  
+
     acessarMemoria(this->offset.EDI, memoria[END1.toLong()]);
     int valorReg1 = stoi(memoria[END1.toLong()]);
-  
+
     acessarMemoria(this->offset.ESI, memoria[END2.toLong()]);
     int valorReg2 = stoi(memoria[END2.toLong()]);
-  
+
     int resultado = valorReg1 - valorReg2;
 
 
@@ -331,5 +332,26 @@ void ArquiteturaX86::cmp(Endereco<32>& END1, Endereco<32>& END2) {
     gerais.EAX = valorReg1;
     gerais.EBX = valorReg2;
 
+    this->gerais.mostrar_dados();
+}
+
+void ArquiteturaX86::jmp(Endereco<32>& END) {
+    this->offset.EIP.increment(2);
+
+    //Exibe a instrução JMP
+    cout << "Executando JMP para o endereço: " << END.end_hex << endl;
+
+    acessarMemoria(this->offset.EIP, "JMP");
+    this->offset.EIP.increment(4);
+    acessarMemoria(this->offset.EIP, END.end_hex);
+    //this->offset.mostrar_dados();
+
+    //Atualiza EIP para endereço de destino
+    this->offset.EIP = END.end_hex;
+
+    acessarMemoria(this->offset.EIP, memoria[END.toLong()]);
+
+    cout << "Novo valor do EIP: " << this->offset.EIP.end_hex;
+    this->offset.mostrar_dados();
     this->gerais.mostrar_dados();
 }
