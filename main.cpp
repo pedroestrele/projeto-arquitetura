@@ -1,84 +1,112 @@
-#include <bits/stdc++.h>
-#include "registradores.h"
-#include "tabela.h"
 #include "arquiteturaX86.h"
 #include "endereco.h"
+#include "registradores.h"
+#include "tabela.h"
+#include <bits/stdc++.h>
 
 using namespace std;
 
+enum instrucoes { ADD, INC, DEC, MOV, PUSH, POP, CMP };
 
-int main(){
+map<string, instrucoes> instrucao_map = {
+    {"add", ADD},   {"inc", INC}, {"dec", DEC}, {"mov", MOV},
+    {"push", PUSH}, {"pop", POP}, {"cmp", CMP}};
+
+int main()
+{
 	RegGerais gerais;
-  	RegSeletorSegmentos seletores_segmento;
-  	RegOffsets offset;
- 	RegFlag flag;
-  	map <long, string> memoria;
+	RegSeletorSegmentos seletores_segmento;
+	RegOffsets offset;
+	RegFlag flag;
+	map<long, string> memoria;
 
-  	seletores_segmento.obter_entrada();
+	seletores_segmento.obter_entrada();
 
-  	TabelaDescritorSegmento tabela = TabelaDescritorSegmento(seletores_segmento);
-  	tabela.entrada_de_tabela();
-  	tabela.mostrar_tabela();
+	TabelaDescritorSegmento tabela =
+	    TabelaDescritorSegmento (seletores_segmento);
+	tabela.entrada_de_tabela();
+	tabela.mostrar_tabela();
 
+	ArquiteturaX86 PC (
+	    gerais, seletores_segmento, offset, memoria, tabela, flag);
+	string instrucao;
+	cout << "Digite a instrucao: ";
+	cin >> instrucao;
 
-  	offset.obter_entrada();
-  	//tabela.verifica_GPF(offset);
+	for (auto &c : instrucao) {
+		c = tolower (c);
+	}
 
-  	ArquiteturaX86 PC = ArquiteturaX86(gerais, seletores_segmento, offset, memoria, tabela, flag);
+	switch (instrucao_map[instrucao]) {
+		case MOV: {
+			string end_hex1, end_hex2;
+			cout << "Digite o endereço 1: ";
+			cin >> end_hex1;
+			cout << "Digite o endereço 2: ";
+			cin >> end_hex2;
 
-  	string instrucao;
-  	cout<<"Digite a instrução que será simulada: ";
-  	cin>>instrucao;
+			Endereco<32> END1 (end_hex1), END2 (end_hex2);
+			PC.mov (END1, END2);
+		} break;
+		case PUSH: {
+			// coletar todos os dados necesários no main
+			cout << "Digite o endereço: ";
+			string end_hex;
+			cin >> end_hex;
 
-  	if (instrucao=="add"){
-    		//coletar todos os dados necesários no main
-    		string end_hex1, end_hex2;
-    		cin>>end_hex1>>end_hex2;
+			Endereco<32> END (end_hex);
+			PC.push (END); // calculos,barramentos e etc na função
+		} break;
+		case POP: {
+			// coletar todos os dados necesários no main
+			cout << "Digite o endereço: ";
+			string end_hex;
+			cin >> end_hex;
 
-    		Endereco<32> END1(end_hex1), END2(end_hex2);
+			Endereco<32> END (end_hex);
+			PC.pop (END); // calculos,barramentos e etc na função
+		} break;
+		case ADD: {
+			// coletar todos os dados necesários no main
+			string end_hex1, end_hex2;
+			cin >> end_hex1 >> end_hex2;
 
-    		PC.add(END1,END2);//calculos,barramentos e etc na função
-  	} 
-	else if (instrucao=="push"){
-   	 	//coletar todos os dados necesários no main
-    		string end_hex1;
-    		cin>>end_hex1;
+			Endereco<32> END1 (end_hex1), END2 (end_hex2);
 
-    		Endereco<32> END1(end_hex1);
+			PC.add (END1, END2); // calculos,barramentos e etc na função
+		} break;
+		case INC: {
+			string end_hex;
+			cout << "Digite o endereço: ";
+			cin >> end_hex;
 
-    		PC.push(END1);//calculos,barramentos e etc na função
- 	}
+			Endereco<32> END (end_hex);
 
-  	if (instrucao=="inc" or instrucao=="INC"){
-    		string end_hex;
-        	cout<<"Digite o endereço: ";
-        	cin>>end_hex;
-		
-        	Endereco<32> END(end_hex);
+			PC.inc (END);
+		} break;
+		case DEC: {
+			string end_hex;
+			cout << "Digite o endereço: ";
+			cin >> end_hex;
 
-        	PC.inc(END);
-      	}
+			Endereco<32> END (end_hex);
+			PC.dec (END);
+		} break;
+		case CMP: {
+			string end_hex1, end_hex2;
+			cout << "Digite o endereço 1: ";
+			cin >> end_hex1;
+			cout << "Digite o endereço 2: ";
+			cin >> end_hex2;
 
-  	if (instrucao=="dec" or instrucao=="DEC"){
-        	string end_hex;
-      		cout<<"Digite o endereço: ";
-        	cin>>end_hex;
-		
-    		Endereco<32> END(end_hex);
-		
-        	PC.dec(END);
-      	}
+			Endereco<32> END1 (end_hex1), END2 (end_hex2);
 
-  	if (instrucao=="cmp" or instrucao=="CMP"){
-        	string end_hex1, end_hex2;
-        	cout<<"Digite o endereço 1: ";
-        	cin>>end_hex1;
-        	cout<<"Digite o endereço 2: ";
-        	cin>>end_hex2;
-		
-        	Endereco<32> END1(end_hex1), END2(end_hex2);
-		
-        	PC.cmp(END1,END2);
- 	}
+			PC.cmp (END1, END2);
+		} break;
+
+		default:
+			break;
+	}
+
 	return 0;
 }

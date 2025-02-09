@@ -18,21 +18,21 @@ Desenvolva um programa que realize os cálculos de endereçamento e apresente o 
 
 ## Componentes
 
-* [ ] Instrução MOV
-* [ ] Instrução PUSH
-* [ ] Instrução POP
+* [X] Instrução MOV
+* [X] Instrução PUSH
+* [X] Instrução POP
 * [ ] Instrução XCHG
-* [ ] Instrução ADD
+* [X] Instrução ADD
 * [ ] Instrução SUB
 * [ ] Instrução MUL
-* [ ] Instrução INC
-* [ ] Instrução DEC
+* [X] Instrução INC
+* [X] Instrução DEC
 * [ ] Instrução NEG
 * [ ] Instrução AND
 * [ ] Instrução OR
 * [ ] Instrução XOR
 * [ ] Instrução NOT
-* [ ] Instrução CMP
+* [X] Instrução CMP
 * [ ] Instrução JMP
 * [ ] Instrução Jxx
 * [ ] Instrução CALL

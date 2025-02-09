@@ -1,0 +1,20 @@
+﻿---
+AlignAfterOpenBracket: AlwaysBreak
+AlignEscapedNewlines: DontAlign
+AlignOperands: 'true'
+AlwaysBreakBeforeMultilineStrings: 'true'
+AlwaysBreakTemplateDeclarations: 'Yes'
+BreakBeforeBraces: Linux
+BreakBeforeTernaryOperators: 'true'
+BreakStringLiterals: 'true'
+IndentCaseLabels: 'true'
+IndentWidth: '4'
+KeepEmptyLinesAtTheStartOfBlocks: 'false'
+Language: Cpp
+SortIncludes: 'true'
+SpaceAfterTemplateKeyword: 'true'
+SpaceBeforeAssignmentOperators: 'true'
+SpaceBeforeParens: NonEmptyParentheses
+TabWidth: '4'
+UseTab: ForIndentation
+...
