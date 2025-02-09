@@ -32,6 +32,19 @@ class RegGerais
 		cout << "ECX: " << ECX.value << endl;
 		cout << "EDX: " << EDX.value << endl;
 	}
+
+	void set_EAX(string value){
+		this->EAX.value = value;
+	}
+	void set_EBX(string value){
+		this->EBX.value = value;
+	}
+	void set_ECX(string value){
+		this->ECX.value = value;
+	}
+	void set_EDX(string value){
+		this->EDX.value = value;
+	}
 };
 
 ///////////SELETORES DE SEGMENTO///////////
@@ -121,6 +134,14 @@ class RegOffsets
 		cout << "ESI: " << this->ESI.end_hex << endl;
 		cout << "EDI: " << this->EDI.end_hex << endl;
 	}
+
+	void set_ESI(string value){
+		this->ESI = Endereco<32> (value);
+	}
+	void set_EDI(string value){
+		this->EDI = Endereco<32> (value);
+	}
+
 };
 
 ///////////FLAG///////////
