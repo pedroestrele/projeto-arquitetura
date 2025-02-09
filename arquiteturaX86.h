@@ -9,79 +9,79 @@ using namespace std;
 class ArquiteturaX86
 {
   public:
-    RegGerais gerais;
-    RegSeletorSegmentos &seletores_segmento;
-    RegOffsets &offset;
-    RegFlag &flag;
-    TabelaDescritorSegmento &tabela;
-    // int flag;
-    map<long, string> memoria;
+  RegGerais gerais;
+  RegSeletorSegmentos &seletores_segmento;
+  RegOffsets &offset;
+  RegFlag &flag;
+  TabelaDescritorSegmento &tabela;
+  // int flag;
+  map<long, string> memoria;
 
-    ArquiteturaX86 (
-        RegGerais gerais, RegSeletorSegmentos &seletores_segmento,
-        RegOffsets &offset, map<long, string> memoria,
-        TabelaDescritorSegmento &tabela, RegFlag &flag)
-        : gerais (gerais), seletores_segmento (seletores_segmento),
-          offset (offset), flag (flag), tabela (tabela), memoria (memoria)
-    {
-        seletores_segmento.mostrar_dados();
-    }
+  ArquiteturaX86 (
+      RegGerais gerais, RegSeletorSegmentos &seletores_segmento,
+      RegOffsets &offset, map<long, string> memoria,
+      TabelaDescritorSegmento &tabela, RegFlag &flag)
+      : gerais (gerais), seletores_segmento (seletores_segmento),
+        offset (offset), flag (flag), tabela (tabela), memoria (memoria)
+  {
+      seletores_segmento.mostrar_dados();
+  }
 
-    void add (Endereco<32> &END1, Endereco<32> &END2);
-    void inc (Endereco<32> &END);
-    void dec (Endereco<32> &END);
-    void mov (Endereco<32> &END1, Endereco<32> &END2);
-    void xchg (Endereco<32> &END1, Endereco<32> &END2);
-    void push (Endereco<32> &END1);
-    void pop (Endereco<32> &END1);
-    void cmp (Endereco<32> &END1, Endereco<32> &END2);
-    void jmp (Endereco<32> &END);
-    void mul (Endereco<32> &END1, Endereco<32> &END2);
-    void sub (Endereco<32> &END1, Endereco<32> &END2);
-    void neg (Endereco<32> &END);
+  void add (Endereco<32> &END1, Endereco<32> &END2);
+  void inc (Endereco<32> &END);
+  void dec (Endereco<32> &END);
+  void mov (Endereco<32> &END1, Endereco<32> &END2);
+  void xchg (Endereco<32> &END1, Endereco<32> &END2);
+  void push (Endereco<32> &END1);
+  void pop (Endereco<32> &END1);
+  void cmp (Endereco<32> &END1, Endereco<32> &END2);
+  void jmp (Endereco<32> &END);
+  void mul (Endereco<32> &END1, Endereco<32> &END2);
+  void sub (Endereco<32> &END1, Endereco<32> &END2);
+  void neg (Endereco<32> &END);
 
-    void acessarMemoria (Endereco<32> &end, string retorno)
-    {
-        cout << endl << end.end_hex << endl;
-        cout << "-------->" << endl;
-        cout << "BUS END" << endl;
-        cout << endl;
-        cout << retorno << endl;
-        cout << "<--------" << endl;
-        cout << "BUS DATA" << endl;
-    };
+  void acessarMemoria (Endereco<32> &end, string retorno)
+  {
+      cout << endl << end.end_hex << endl;
+      cout << "-------->" << endl;
+      cout << "BUS END" << endl;
+      cout << endl;
+      cout << retorno << endl;
+      cout << "<--------" << endl;
+      cout << "BUS DATA" << endl;
+  };
 
-    void inserirMemoria (Endereco<32> &end, int valor)
-    {
-        cout << endl << end.end_hex << endl;
-        cout << "-------->" << endl;
-        cout << "BUS END" << endl;
-        cout << valor << endl;
-        cout << "-------->" << endl;
-        cout << "BUS DATA" << endl;
-    };
+  void inserirMemoria (Endereco<32> &end, int valor)
+  {
+      cout << endl << end.end_hex << endl;
+      cout << "-------->" << endl;
+      cout << "BUS END" << endl;
+      cout << valor << endl;
+      cout << "-------->" << endl;
+      cout << "BUS DATA" << endl;
+  };
 
-    string obterValorAlocado (int n)
-    {
-        string valor;
-        cout << "O que estaria presente no endereço " << n << "? ";
-        cin >> valor;
-        return valor;
-    }
+  string obterValorAlocado (int n)
+  {
+      string valor;
+      cout << "O que estaria presente no endereço " << n << "? ";
+      cin >> valor;
+      return valor;
+  }
 
-    Endereco<32>
-    obterEnderecoLinear (DescritorSegmento &descritor, Endereco<32> &end)
-    {
-        Endereco<32> end_linear (descritor.end_base.end_hex);
-        end_linear.increment (end.toLong());
+  Endereco<32>
+  obterEnderecoLinear (DescritorSegmento &descritor, Endereco<32> &end)
+  {
+      Endereco<32> end_linear (descritor.end_base.end_hex);
+      end_linear.increment (end.toLong());
 
-        if (descritor.ehGPF (end_linear)) {
-            cout << endl << "GPF!" << endl;
-            exit(4);
-        }
+      if (descritor.ehGPF (end_linear)) {
+          cout << endl << "GPF!" << endl;
+          exit(4);
+      }
 
-        return end_linear;
-    }
+      return end_linear;
+  }
 };
 
 void ArquiteturaX86::add (Endereco<32> &END1, Endereco<32> &END2)
