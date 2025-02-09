@@ -14,17 +14,13 @@ class HexNumber
 	HexNumber() : value ("0") {}
 	HexNumber (string value) : value (value) {}
 	
-	HexNumber(string value_in_binary, bool t) : value (binaryToHex(value_in_binary)) {}
+	HexNumber(long value_in_binary, bool t) : value (binaryToHex(value_in_binary)) {}
 
-	static string binaryToHex(string& binary) {
-		string value;
-    	long num = bitset<32>(binary).to_ulong();
+	static string binaryToHex(long binary) {
     	
 		stringstream ss;
-    	ss << hex << num;
-		ss >> value;
-		ss.clear();
-    	return value;
+    	ss << hex << binary;
+    	return ss.str();
 	}
 
 	long toLong()
