@@ -6,13 +6,13 @@
 
 using namespace std;
 
-enum instrucoes { ADD, INC, DEC, MOV, PUSH, POP, CMP, JMP, XCHG, SUB, MUL};
+enum instrucoes { ADD, INC, DEC, MOV, PUSH, POP, CMP, JMP, XCHG, SUB, MUL, NEG};
 
 map<string, instrucoes> instrucao_map = {
     {"add", ADD},   {"inc", INC}, {"dec", DEC}, {"mov", MOV},
     {"push", PUSH}, {"pop", POP}, {"cmp", CMP}, {"jmp", JMP},
-    {"xchg", XCHG}, {"sub", SUB}, {"mul", MUL}
-};
+    {"xchg", XCHG}, {"sub", SUB}, {"mul", MUL}, {"neg", NEG}
+    };
 
 int main()
 {
@@ -130,7 +130,7 @@ int main()
      			 Endereco<32> END2 (end_hex2);
      			 PC.sub (END1, END2);
     		} break;
-   		 case MUL: { 
+   		case MUL: { 
       			string end_hex1, end_hex2;
     			cin >> end_hex1;
       			cin >> end_hex2;
@@ -138,6 +138,14 @@ int main()
       			Endereco<32> END2 (end_hex2);
       			PC.mul (END1, END2);
     		} break;
+		case NEG: {
+        		string end_hex;
+         		cin >> end_hex;
+         		Endereco<32> END (end_hex);
+          		PC.neg (END);
+        	} break;
+
+		
 		default:
 			break;
 	}
