@@ -19,13 +19,14 @@ int main(){
 	tabela.entrada_de_tabela();
 	tabela.mostrar_tabela();
 
+
 	offset.obter_entrada();
 	//tabela.verifica_GPF(offset);
 
-	ArquiteturaX86 PC = ArquiteturaX86(gerais, seletores_segmento, offset, 0, memoria, tabela);
+	ArquiteturaX86 PC = ArquiteturaX86(gerais, seletores_segmento, offset, memoria, tabela, 0);
 
 	string instrucao;
-	cout<<"Digite a instrução que será simulada"<<endl;
+	cout<<"Digite a instrução que será simulada: ";
 	cin>>instrucao;
 
 	if (instrucao=="add"){
@@ -45,6 +46,23 @@ int main(){
 
 		PC.push(END1);//calculos,barramentos e etc na função
 	}
+	
+	if (instrucao=="inc" or instrucao=="INC"){
+		string end_hex;
+    		cout<<"Digite o endereço: ";
+    		cin>>end_hex;
+    		Endereco<32> END(end_hex);
 
+    		PC.inc(END);
+    	}
+	
+	if (instrucao=="dec" or instrucao=="DEC"){
+    		string end_hex;
+   	 	cout<<"Digite o endereço: ";
+    		cin>>end_hex;
+		Endereco<32> END(end_hex);
+    
+    		PC.dec(END);
+    	}
 	return 0;
 }

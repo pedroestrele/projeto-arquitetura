@@ -1,4 +1,4 @@
-# Arquitetura x86 com Paginação
+# Arquitetura x86
 
 Desenvolva um programa que realize os cálculos de endereçamento e apresente o fluxo de barramentos de endereços e dados, do conjunto de instruções linguagem assembly x86 em modo Protegido (32 bits). O programa deverá apresentar:
 
@@ -18,7 +18,6 @@ Desenvolva um programa que realize os cálculos de endereçamento e apresente o 
 
 ## Componentes
 
-* [ ] Unidade de Paginação
 * [ ] Instrução MOV
 * [ ] Instrução PUSH
 * [ ] Instrução POP
