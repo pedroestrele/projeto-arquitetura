@@ -38,26 +38,23 @@ class RegSeletorSegmentos{
 
     RegSeletorSegmentos() : CS(Endereco<16>()), SS(Endereco<16>()), DS(Endereco<16>()){}
     RegSeletorSegmentos(string CS, string SS, string DS){
-      this->CS = Endereco<16>(CS);
-      this->SS = Endereco<16>(SS);
-      this->DS = Endereco<16>(DS);
+      this->CS.end_hex = CS;
+      this->SS.end_hex = SS;
+      this->DS.end_hex = DS;
     }
 
+
     void obter_entrada(){
-        string cs_value, ss_value, ds_value;
         cout<<"Digite os seletores de cada segmento:";
 
         cout<<"\nCS: ";
-        cin>>cs_value;
-        this->CS = Endereco<16>(cs_value);
+        cin>>this->CS.end_hex;
 
         cout<<"SS: ";
-        cin>>ss_value;
-        this->SS = Endereco<16>(ss_value);
+        cin>>this->SS.end_hex;
 
         cout<<"DS: ";
-        cin>>ds_value;
-        this->DS = Endereco<16>(ds_value);
+        cin>>this->DS.end_hex;
     }
 
     void mostrar_dados(){
@@ -78,11 +75,11 @@ class RegOffsets{
 
     RegOffsets() : EIP(Endereco<32>()), EBP(Endereco<32>()), ESP(Endereco<32>()), ESI(Endereco<32>()), EDI(Endereco<32>()){}
 	RegOffsets(string EIP, string EBP, string ESP, string ESI, string EDI){
-		this->EIP = Endereco<32>(EIP);
-		this->EBP = Endereco<32>(EBP);
-		this->ESP = Endereco<32>(ESP);
-		this->ESI = Endereco<32>(ESI);
-		this->EDI = Endereco<32>(EDI);
+		this->EIP.end_hex = EIP;
+		this->EBP.end_hex = EBP;
+		this->ESP.end_hex = ESP;
+		this->ESI.end_hex = ESI;
+		this->EDI.end_hex = EDI;
 	}
 
     void obter_entrada(){
@@ -107,5 +104,3 @@ class RegOffsets{
     }
 
 };
-
-  

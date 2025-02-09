@@ -14,8 +14,8 @@ int main(){
 	map <long, string> memoria;
 
 	seletores_segmento.obter_entrada();
-	TabelaDescritorSegmento tabela = TabelaDescritorSegmento(seletores_segmento);
 
+	TabelaDescritorSegmento tabela = TabelaDescritorSegmento(seletores_segmento);
 	tabela.entrada_de_tabela();
 	tabela.mostrar_tabela();
 
@@ -36,6 +36,14 @@ int main(){
 		Endereco<32> END1(end_hex1), END2(end_hex2);
 
 		PC.add(END1,END2);//calculos,barramentos e etc na função
+	} else if (instrucao=="push"){
+		//coletar todos os dados necesários no main
+		string end_hex1;
+		cin>>end_hex1;
+		
+		Endereco<32> END1(end_hex1);
+
+		PC.push(END1);//calculos,barramentos e etc na função
 	}
 
 	return 0;

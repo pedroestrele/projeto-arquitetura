@@ -1,24 +1,28 @@
 #include <bits/stdc++.h>
+#include <string>
 #include "registradores.h"
+#include "endereco.h"
 
 using namespace std;
 #pragma once 
 
 class DescritorSegmento {
 	public:
-		long seletor;
-		long end_base;
-		long end_lim;
+		Endereco<16> seletor;
+		Endereco<32> end_base;
+		Endereco<32> end_lim;
 		int segm_acc;
-	DescritorSegmento() : seletor(0), end_base(0), end_lim(0), segm_acc(3){}
 
+	DescritorSegmento() : seletor(Endereco<16>()), end_base(Endereco<32>()), end_lim(Endereco<32>()), segm_acc(3) {}	
 	void imprimirLinhaTabela(int tamanho){
-		cout<< "| " << left << setw(tamanho) << this->seletor << "| " << left << setw(tamanho) << this->end_base << "| " << left << setw(tamanho) << this->end_lim << "| "  
+		cout<< "| " << left << setw(tamanho) << this->seletor.end_hex << "| "
+		<< left << setw(tamanho) << this->end_base.end_hex << "| " << left
+		<< setw(tamanho) << this->end_lim.end_hex << "| "  
 		<< left << setw(tamanho) << this->segm_acc << "| " << endl;
 	}
 
-	bool ehGPF(long offset){
-		return this->end_base + offset > this->end_lim;
+	bool ehGPF(Endereco<32>& end_linear){
+		return end_linear.toLong() > this->end_lim.toLong();
 	}
 
 };
@@ -28,13 +32,13 @@ class TabelaDescritorSegmento {
 		DescritorSegmento code_segm;
 		DescritorSegmento stack_segm;
 		DescritorSegmento data_segm;
-		
-	TabelaDescritorSegmento() : code_segm(DescritorSegmento()), stack_segm(DescritorSegmento()), data_segm(DescritorSegmento()){}
 
+	TabelaDescritorSegmento() : code_segm(DescritorSegmento()), stack_segm(DescritorSegmento()), data_segm(DescritorSegmento()) {}
 	TabelaDescritorSegmento(RegSeletorSegmentos& seletores_segmento) {
-		this->code_segm.seletor = seletores_segmento.CS.end_long;
-    this->stack_segm.seletor = seletores_segmento.SS.end_long;
-    this->data_segm.seletor = seletores_segmento.DS.end_long;
+		this->code_segm.seletor.end_hex = seletores_segmento.CS.end_hex;
+    this->stack_segm.seletor.end_hex = seletores_segmento.SS.end_hex;
+    this->data_segm.seletor.end_hex = seletores_segmento.DS.end_hex;
+
 	}
 
 	void mostrar_tabela(){
@@ -52,41 +56,43 @@ class TabelaDescritorSegmento {
 	bool verifica_GPF(RegOffsets offset);
 	void entrada_de_tabela();
 	void criar_descritores(RegSeletorSegmentos seletores_segmento);
-	void entrada_offset(RegOffsets &offset);
 
 };
 
 void TabelaDescritorSegmento::entrada_de_tabela(){
 	cout<<"\nDigite os endereços de inicio de cada segmento da tabela de segmentos:";
 	cout<<"\nCod_Seg: ";
-	cin>>this->code_segm.end_base;
+	cin>>this->code_segm.end_base.end_hex;
+
 	cout<<"Stack_Seg: ";
-	cin>>this->stack_segm.end_base;
+	cin>>this->stack_segm.end_base.end_hex;
+	this->code_segm.end_lim.end_hex = this->stack_segm.end_base.end_hex;
+	this->code_segm.end_lim.increment(-1);
 
-	if(this->code_segm.end_base >= this->stack_segm.end_base){
+	/*if(this->code_segm.end_base.toLong() >= this->stack_segm.end_base){
 		cout<< "GPF: O endereço de inicio do segmento de código deve ser menor que o endereço de inicio do segmento de pilha.\n";
-	}
+	}*/
 
-	this->code_segm.end_lim = this->stack_segm.end_base -1;
 	cout<<"Data_Seg: ";
-	cin>>this->data_segm.end_base;
+	cin>>this->data_segm.end_base.end_hex;
+	this->stack_segm.end_lim.end_hex = this->data_segm.end_base.end_hex;
+	this->stack_segm.end_lim.increment(-1);
 
-	if(this->data_segm.end_base <= this->stack_segm.end_base){
+	/*if(this->data_segm.end_base <= this->stack_segm.end_base){
 		cout<<"GPF: O endereço de inicio do segmento de pilha deve ser menor que o endereço de inicio do segmento de dados.\n";
-	}
+	}*/
 
-	this->stack_segm.end_lim = this->data_segm.end_base -1;
 	cout<<"Digite o endereço limite do segmento de dados: ";
-	cin>>this->data_segm.end_lim;
+	cin>>this->data_segm.end_lim.end_hex;
 }
 
 bool TabelaDescritorSegmento:: verifica_GPF(RegOffsets offset){
-  	if(code_segm.ehGPF(offset.EIP.end_long)){
+  	if(code_segm.ehGPF(offset.EIP)){
       cout<<"GPF: endereço linear do segmento maior que o limite do segmento de código"<<endl;
       return true;
 		}
 
-  	if(stack_segm.ehGPF(offset.EBP.end_long)){
+  	if(stack_segm.ehGPF(offset.EBP)){
       cout<<"GPF: endereço linear do segmento maior que o limite do segmento de pilha"<<endl;
       return true;
     }
