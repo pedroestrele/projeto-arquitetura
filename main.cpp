@@ -11,7 +11,7 @@ enum instrucoes { ADD, INC, DEC, MOV, PUSH, POP, CMP, JMP, XCHG, SUB, MUL};
 map<string, instrucoes> instrucao_map = {
     {"add", ADD},   {"inc", INC}, {"dec", DEC}, {"mov", MOV},
     {"push", PUSH}, {"pop", POP}, {"cmp", CMP}, {"jmp", JMP},
-    {"xchg", XCHG}, {"sub", SUB}, {"mul", MUL};
+    {"xchg", XCHG}, {"sub", SUB}, {"mul", MUL}};
 
 int main()
 {
