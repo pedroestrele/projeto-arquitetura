@@ -16,8 +16,8 @@ int main(){
 	seletores_segmento.obter_entrada();
 	TabelaDescritorSegmento tabela = TabelaDescritorSegmento(seletores_segmento);
 
-	tabela.entrada_de_tabela();
-	tabela.mostrar_tabela();
+	//tabela.entrada_de_tabela();
+	//tabela.mostrar_tabela();
 
 	offset.obter_entrada();
 	//tabela.verifica_GPF(offset);
@@ -25,7 +25,7 @@ int main(){
 	ArquiteturaX86 PC = ArquiteturaX86(gerais, seletores_segmento, offset, memoria, tabela, 0);
 
 	string instrucao;
-	cout<<"Digite a instrução que será simulada"<<endl;
+	cout<<"Digite a instrução que será simulada: ";
 	cin>>instrucao;
 
 	if (instrucao=="add"){
