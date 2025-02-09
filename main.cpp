@@ -149,14 +149,33 @@ int main()
 			string end_dest, end_fonte;
 			cout << "Digite o endereco destino: ";
 			cin>>end_dest;
-			cout << "Digite o endereco destino: ";
+			cout << "Digite o endereco fonte: ";
 			cin>>end_fonte;
 			Endereco<32> DST (end_dest);
 			Endereco<32> SRC (end_fonte);
 			PC.AND(DST,SRC);
+		}break;
+		case OR: {
+			string end_dest, end_fonte;
+			cout << "Digite o endereco destino: ";
+			cin>>end_dest;
+			cout << "Digite o endereco fonte: ";
+			cin>>end_fonte;
+			Endereco<32> DST (end_dest);
+			Endereco<32> SRC (end_fonte);
+			PC.OR(DST,SRC);
+		}break;
+		case XOR: {
+			string end_dest, end_fonte;
+			cout << "Digite o endereco destino: ";
+			cin>>end_dest;
+			cout << "Digite o endereco fonte: ";
+			cin>>end_fonte;
+			Endereco<32> DST (end_dest);
+			Endereco<32> SRC (end_fonte);
+			PC.XOR(DST,SRC);
+		}break;
 
-		}
-		
 		default:
 			break;
 	}
