@@ -13,6 +13,19 @@ class HexNumber
 	string value;
 	HexNumber() : value ("0") {}
 	HexNumber (string value) : value (value) {}
+	
+	HexNumber(string value_in_binary, bool t) : value (binaryToHex(value_in_binary)) {}
+
+	static string binaryToHex(string& binary) {
+		string value;
+    	long num = bitset<32>(binary).to_ulong();
+    	
+		stringstream ss;
+    	ss << hex << num;
+		ss >> value;
+		ss.clear();
+    	return value;
+	}
 
 	long toLong()
 	{
