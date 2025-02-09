@@ -145,7 +145,17 @@ int main()
          		Endereco<32> END (end_hex);
           		PC.neg (END);
         	} break;
+		case AND: {
+			string end_dest, end_fonte;
+			cout << "Digite o endereco destino: ";
+			cin>>end_dest;
+			cout << "Digite o endereco destino: ";
+			cin>>end_fonte;
+			Endereco<32> DST (end_dest);
+			Endereco<32> SRC (end_fonte);
+			PC.AND(DST,SRC);
 
+		}
 		
 		default:
 			break;
