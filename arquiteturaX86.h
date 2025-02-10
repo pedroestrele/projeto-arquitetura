@@ -249,19 +249,20 @@ void ArquiteturaX86::pop (Endereco<32> &END1)
 
 void ArquiteturaX86::inc (Endereco<32> &END)
 {
+	// obtem endereço linear do endereco e pede um valor que esta alocado ali
 	Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END);
 	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
 
 	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, "INC");
-	this->offset.EIP.increment (4);
+	acessarMemoria (end_linear, "INC"); // obtem DEC
+	this->offset.EIP.increment (4); // avanca EIP
 
 	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
 	acessarMemoria (end_linear, END.end_hex);
 	// this->offset.mostrar_dados();
 
-	this->offset.EDI.end_hex = END.end_hex;
-	this->offset.EIP.increment (4);
+	this->offset.EDI.end_hex = END.end_hex; // atualiza EDI
+	this->offset.EIP.increment (4); // avanca EIP
 	// this->offset.mostrar_dados();
 
 	end_linear = obterEnderecoLinear (tabela.data_segm, END);
@@ -269,10 +270,10 @@ void ArquiteturaX86::inc (Endereco<32> &END)
 	gerais.EAX.value = memoria[end_linear.toLong()];
 	// this->gerais.mostrar_dados();
 
-	gerais.EAX.inc();
+	gerais.EAX.inc(); // incrementa eax
 	// this->gerais.mostrar_dados();
 
-	inserirMemoria (end_linear, this->gerais.EAX);
+	inserirMemoria (end_linear, this->gerais.EAX); // armazena de volta
 	memoria[offset.EDI.toLong()] = gerais.EAX.value;
 	this->offset.mostrar_dados();
 	this->gerais.mostrar_dados();
@@ -280,20 +281,21 @@ void ArquiteturaX86::inc (Endereco<32> &END)
 
 void ArquiteturaX86::dec (Endereco<32> &END)
 {
+	// obtem endereço linear do endereco e pede um valor que esta alocado ali
 	Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END);
 	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
 
 	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, "DEC");
-	this->offset.EIP.increment (4);
+	acessarMemoria (end_linear, "DEC"); // obtem DEC
+	this->offset.EIP.increment (4); // avanca EIP
 	// this->offset.mostrar_dados();
 
 	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
 	acessarMemoria (end_linear, END.end_hex);
 	// this->offset.mostrar_dados();
 
-	this->offset.EDI.end_hex = END.end_hex;
-	this->offset.EIP.increment (4);
+	this->offset.EDI.end_hex = END.end_hex; // atualiza EDI
+	this->offset.EIP.increment (4); // avanca EIP
 	// this->offset.mostrar_dados();
 
 	end_linear = obterEnderecoLinear (tabela.data_segm, END);
@@ -301,10 +303,10 @@ void ArquiteturaX86::dec (Endereco<32> &END)
 	gerais.EAX.value = memoria[end_linear.toLong()];
 	// this->gerais.mostrar_dados();
 
-	gerais.EAX.dec();
+	gerais.EAX.dec(); // decrementa EAX
 	// this->gerais.mostrar_dados();
 
-	inserirMemoria (end_linear, this->gerais.EAX);
+	inserirMemoria (end_linear, this->gerais.EAX); // armazena de volta
 	memoria[end_linear.toLong()] = gerais.EAX.value;
 	this->offset.mostrar_dados();
 	this->gerais.mostrar_dados();
