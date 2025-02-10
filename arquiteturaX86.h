@@ -139,17 +139,20 @@ void ArquiteturaX86::mov (Endereco<32> &END1, Endereco<32> &END2)
 	end_linear = obterEnderecoLinear (tabela.data_segm, END2);
 	this->memoria[end_linear.toLong()] = obterValorAlocado (2);
 
+	// Obtém instrução MOV em código
 	end_linear = obterEnderecoLinear (tabela.code_segm, offset.EIP);
-	acessarMemoria (end_linear, "MOV"); // Obtém MOV
+	acessarMemoria (end_linear, "MOV");
 	this->offset.EIP.increment (4);
 	this->offset.mostrar_dados();
 
+	// Obtém END1 em código
 	end_linear = obterEnderecoLinear (tabela.code_segm, offset.EIP);
-	acessarMemoria (end_linear, END1.end_hex); // Obtém END1
+	acessarMemoria (end_linear, END1.end_hex);
 	this->offset.EDI = (END1.end_hex);
 	this->offset.EIP.increment (4);
 	this->offset.mostrar_dados();
 
+	// Obtém END1 em código
 	end_linear = obterEnderecoLinear (tabela.code_segm, offset.EIP);
 	acessarMemoria (end_linear, END2.end_hex); // Obtém END2
 	this->offset.ESI = (END2.end_hex);
@@ -158,8 +161,7 @@ void ArquiteturaX86::mov (Endereco<32> &END1, Endereco<32> &END2)
 
 	end_linear = obterEnderecoLinear (tabela.data_segm, offset.ESI);
 	acessarMemoria (
-	    end_linear,
-	    memoria[end_linear.toLong()]); // Obtém valor apontado por END2
+	    end_linear,memoria[end_linear.toLong()]);
 	this->gerais.EAX.value = memoria[end_linear.toLong()];
 	this->gerais.mostrar_dados();
 
