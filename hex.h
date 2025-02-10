@@ -14,9 +14,9 @@ class HexNumber
 	HexNumber() : value ("0") {}
 	HexNumber (string value) : value (value) {}
 	
-	HexNumber(long value_in_binary, bool t) : value (binaryToHex(value_in_binary)) {}
+	HexNumber(long value_in_binary, bool t) : value (longToHex(value_in_binary)) {}
 
-	static string binaryToHex(long binary) {
+	static string longToHex(long binary) {
     	
 		stringstream ss;
     	ss << hex << binary;
