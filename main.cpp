@@ -62,7 +62,7 @@ int main()
 	bool continuar = true;
 
 	while (continuar) {
-		cout << "para sair digite 'stop'." << endl;
+		cout << "para sair digite 'stop'" << endl;
 		cout << "Digite a instrucao que serah simulada: ";
 		cin >> instrucao;
 

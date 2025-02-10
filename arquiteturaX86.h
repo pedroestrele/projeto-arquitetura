@@ -66,7 +66,7 @@ public:
 		cout << "BUS DATA" << endl;
 	};
 
-	string obterValorAlocado (int n)
+	string obterValorAlocado (auto n)
 	{
 		string valor;
 		cout << "O que estaria presente no endereço " << n << "? ";
@@ -749,7 +749,7 @@ void ArquiteturaX86::OR (Endereco<32> &DST,Endereco<32> &SRC){
 	this->gerais.mostrar_dados(); 
 	
 	//fazendo a operação OR
-	long resultado = (this->gerais.EAX.toLong() || this->gerais.EBX.toLong());
+	long resultado = (this->gerais.EAX.toLong() | this->gerais.EBX.toLong());
 	this->gerais.EAX = HexNumber(resultado,true);
 	//armazenando
 	this->gerais.mostrar_dados();
@@ -763,8 +763,8 @@ void ArquiteturaX86::OR (Endereco<32> &DST,Endereco<32> &SRC){
 
 void ArquiteturaX86::XOR (Endereco<32> &DST,Endereco<32> &SRC){
 	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
-	string valor_dst = obterValorAlocado(1);
-	string valor_src = obterValorAlocado(2);
+	string valor_dst = obterValorAlocado("destino");
+	string valor_src = obterValorAlocado("fonte");
 
 	acessarMemoria(end_lin, "XOR");
 	this->offset.EIP.increment(4);
@@ -816,7 +816,7 @@ void ArquiteturaX86::XOR (Endereco<32> &DST,Endereco<32> &SRC){
 void ArquiteturaX86::NOT (Endereco<32> &DST){
 	//buscando a instrução
 	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
-	string valor_dst = obterValorAlocado(1);
+	string valor_dst = obterValorAlocado("destino");
 
 	acessarMemoria(end_lin, "NOT");
 	this->offset.EIP.increment(4);
