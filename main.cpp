@@ -6,13 +6,15 @@
 
 using namespace std;
 
-enum instrucoes { ADD, INC, DEC, MOV, PUSH, POP, CMP, JMP, XCHG, SUB, MUL, NEG,AND,OR,XOR,NOT};
+enum instrucoes { ADD, INC, DEC, MOV, PUSH, POP, CMP, JMP, XCHG, SUB, MUL, NEG, AND, OR, XOR, NOT, JXX, STOP};
 
 map<string, instrucoes> instrucao_map = {
     {"add", ADD},   {"inc", INC}, {"dec", DEC}, {"mov", MOV},
     {"push", PUSH}, {"pop", POP}, {"cmp", CMP}, {"jmp", JMP},
     {"xchg", XCHG}, {"sub", SUB}, {"mul", MUL}, {"neg", NEG},
-	{"and" , AND},  {"or" , OR},  {"xor", XOR}, {"not", NOT}
+	{"and" , AND},  {"or" , OR},  {"xor", XOR}, {"not", NOT},
+	{"jxx", JXX},{"je", JXX},{"jg", JXX},{"jge", JXX},{"jne",JXX},{"jl", JXX},{"jle", JXX},
+	{"stop", STOP}
     };
 
 int main()
@@ -32,6 +34,9 @@ int main()
 	ArquiteturaX86 PC (
 	    gerais, seletores_segmento, offset, memoria, tabela, flag);
 	string instrucao;
+	bool continuar;
+	while(continuar){
+	cout<< "para sair digite 'stop'."<<endl;
 	cout << "Digite a instrucao que serah simulada: ";
 	cin >> instrucao;
 
@@ -182,9 +187,24 @@ int main()
 			Endereco<32> DST (end_dest);
 			PC.NOT(DST);
 		}break;
+		case JXX: {
+			string tipo="";
+			for(int i=1;i<instrucao.length();i++){
+				tipo = tipo + instrucao[i];
+			}
+			string end_hex;
+			cout << "Digite o endereco: ";
+			cin >> end_hex;
+			Endereco<32> END (end_hex);
+			PC.jxx (END,tipo);
+
+		}break;
+		case STOP: {
+			continuar = false;
+		}break;
 		default:
 			break;
 	}
-
+	}
 	return 0;
 }
