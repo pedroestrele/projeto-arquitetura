@@ -44,6 +44,7 @@ public:
 	void AND (Endereco<32> &DST, Endereco<32> &SRC);
 	void OR (Endereco<32> &DST, Endereco<32> &SRC);
 	void XOR (Endereco<32> &DST, Endereco<32> &SRC);
+	void NOT (Endereco<32> &DST);
   
 	void acessarMemoria (Endereco<32> &end, string retorno)
 	{
@@ -674,7 +675,7 @@ void ArquiteturaX86::OR (Endereco<32> &DST,Endereco<32> &SRC){
 
 
 void ArquiteturaX86::XOR (Endereco<32> &DST,Endereco<32> &SRC){
-Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
 	string valor_dst = obterValorAlocado(1);
 	string valor_src = obterValorAlocado(2);
 
@@ -683,7 +684,7 @@ Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.E
   
 	this->offset.mostrar_dados();
 
-	//CALCULANDO E ACESSANDO OS NOVOS ENDEREÇOS LINEARES
+	//CALCULANDO E ACESSANDO OS NOVOS ENDEREÇOS LINEARES - DESTINO
 	end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
 	acessarMemoria(end_lin,DST.end_hex);
 	this->offset.EIP.increment(4);
@@ -699,7 +700,7 @@ Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.E
   
 	this->gerais.mostrar_dados();
 
-	//repetindo processo para segundo endereço
+	//REPETINDO PROCESSO PARA SEGUNDO ENDEREÇO - FONTE
 	end_lin= obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
 	acessarMemoria(end_lin,SRC.end_hex);
 	this->offset.EIP.increment(4);
@@ -723,4 +724,38 @@ Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.E
 	inserirMemoria(end_lin,this->gerais.EAX);
 
 
+};
+
+void ArquiteturaX86::NOT (Endereco<32> &DST){
+	//buscando a instrução
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
+	string valor_dst = obterValorAlocado(1);
+
+	acessarMemoria(end_lin, "NOT");
+	this->offset.EIP.increment(2);
+
+	this->offset.mostrar_dados();
+	
+	//CALCULANDO E ACESSANDO O PRÓXIMO ENDEREÇO LINEAR -DESTINO
+	end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria(end_lin,DST.end_hex);
+	this->offset.EIP.increment(4);
+	this->offset.set_EDI(DST.end_hex);
+	this->offset.set_ESI(DST.end_hex);
+
+	//acessando o endereço destino em dados
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.ESI);
+	acessarMemoria(end_lin,valor_dst);
+	this->gerais.set_EAX(valor_dst);
+  
+	this->gerais.mostrar_dados();
+
+	long complemento_de_1 = ~ this->gerais.EAX.toLong();
+	this->gerais.EAX = HexNumber(complemento_de_1,true);
+
+	this->gerais.mostrar_dados();
+
+	//movendo eax para destino
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.EDI);
+	inserirMemoria(end_lin,this->gerais.EAX);
 };

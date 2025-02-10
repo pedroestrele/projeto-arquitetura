@@ -175,7 +175,13 @@ int main()
 			Endereco<32> SRC (end_fonte);
 			PC.XOR(DST,SRC);
 		}break;
-
+		case NOT: {
+			string end_dest;
+			cout << "Digite o endereco destino: ";
+			cin>>end_dest;
+			Endereco<32> DST (end_dest);
+			PC.NOT(DST);
+		}break;
 		default:
 			break;
 	}
