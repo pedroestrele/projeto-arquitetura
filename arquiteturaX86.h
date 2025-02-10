@@ -25,9 +25,7 @@ public:
 	    TabelaDescritorSegmento &tabela, RegFlag &flag)
 	    : gerais (gerais), seletores_segmento (seletores_segmento),
 	      offset (offset), flag (flag), tabela (tabela), memoria (memoria)
-	{
-		seletores_segmento.mostrar_dados();
-	}
+	{}
 
 	void add (Endereco<32> &END1, Endereco<32> &END2);
 	void inc (Endereco<32> &END);
@@ -462,6 +460,7 @@ void ArquiteturaX86::jxx (Endereco<32> &END,string tipo){
 		this->jmp(END);
 	}else{
 		this->offset.EIP.increment(4); // pula o jump se a condição for falsa
+		this->offset.mostrar_dados();
 	}
 
 

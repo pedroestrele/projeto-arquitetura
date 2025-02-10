@@ -8,7 +8,7 @@ using namespace std;
 
 class DescritorSegmento
 {
-  public:
+public:
 	Endereco<16> seletor;
 	Endereco<32> end_base;
 	Endereco<32> end_lim;
@@ -21,10 +21,10 @@ class DescritorSegmento
 	}
 	void imprimirLinhaTabela (int tamanho)
 	{
-		cout << "| " << left << setw (tamanho) << this->seletor.end_hex << "| "
-		     << left << setw (tamanho) << this->end_base.end_hex << "| " << left
-		     << setw (tamanho) << this->end_lim.end_hex << "| " << left
-		     << setw (tamanho) << this->segm_acc << "| " << endl;
+		cout << "| " << setw (tamanho) << this->seletor.end_hex << " | "
+		     << setw (tamanho) << this->end_base.end_hex << " | " 
+				 << setw (tamanho) << this->end_lim.end_hex << " | "
+				 << setw (tamanho+3) << this->segm_acc << " |" << endl;
 	}
 
 	bool ehGPF (Endereco<32> &end_linear)
@@ -35,7 +35,7 @@ class DescritorSegmento
 
 class TabelaDescritorSegmento
 {
-  public:
+public:
 	DescritorSegmento code_segm;
 	DescritorSegmento stack_segm;
 	DescritorSegmento data_segm;
@@ -55,17 +55,17 @@ class TabelaDescritorSegmento
 	void mostrar_tabela()
 	{
 		int tamanho = 12;
-		cout << "| " << left << setw (tamanho) << "Seletor"
-		     << "| " << left << setw (tamanho) << "End base"
-		     << "| " << left << setw (tamanho) << "End limite"
-		     << "| " << left << setw (tamanho) << "Nível de Acesso"
-		     << " |" << endl;
+		cout << endl << "| " << left << setw (tamanho) << "Seletor"
+		     << " | " << left << setw (tamanho) << "End base"
+		     << " | " << left << setw (tamanho) << "End limite"
+		     << " | " << left << setw (tamanho) << "Nivel de Acesso |" << endl;
 
-		cout << string (4 * (tamanho + 2) + 1, '-') << endl;
+		cout << string (4 * (tamanho + 4), '-') << endl;
 
 		code_segm.imprimirLinhaTabela (tamanho);
 		stack_segm.imprimirLinhaTabela (tamanho);
 		data_segm.imprimirLinhaTabela (tamanho);
+		cout << endl;
 	}
 
 	bool verifica_GPF (RegOffsets offset);

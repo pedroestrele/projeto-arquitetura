@@ -10,7 +10,7 @@ using namespace std;
 template <int N>
 class Endereco
 {
-  private:
+private:
 	stringstream ss;
 
 	bitset<N> toBitset (string end_hex)
@@ -23,7 +23,7 @@ class Endereco
 		return b;
 	}
 
-  public:
+public:
 	string end_hex; // Não altere o valor de end_hex diretamente!!! Use o método
 	                // set para manter a consistência
 
