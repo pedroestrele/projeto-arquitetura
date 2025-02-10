@@ -9,12 +9,16 @@ using namespace std;
 ///////////GERAIS///////////
 class RegGerais
 {
-  public:
+public:
 	HexNumber EAX;
 	HexNumber EBX;
 	HexNumber ECX;
 	HexNumber EDX;
-	RegGerais() : EAX (HexNumber()), EBX (HexNumber()), ECX (HexNumber()), EDX (HexNumber()) {}
+	RegGerais()
+	    : EAX (HexNumber()), EBX (HexNumber()), ECX (HexNumber()),
+	      EDX (HexNumber())
+	{
+	}
 
 	RegGerais (string EAX, string EBX, string ECX, string EDX)
 	{
@@ -26,18 +30,25 @@ class RegGerais
 
 	void mostrar_dados()
 	{
-		cout << "\nRegistradores Gerais: " << endl;
-		cout << "EAX: " << EAX.value << endl;
-		cout << "EBX: " << EBX.value << endl;
-		cout << "ECX: " << ECX.value << endl;
-		cout << "EDX: " << EDX.value << endl;
+		int tamanho = 15;
+		cout << endl << "| Registradores Gerais |" << endl;
+		cout << string (tamanho + 9, '-') << endl;
+		cout << "| EAX |" << setw(tamanho) << EAX.value << " |" <<  endl;
+		cout << "| EBX |" << setw(tamanho) << EBX.value << " |" << endl;
+		cout << "| ECX |" << setw(tamanho) << ECX.value << " |" << endl;
+		cout << "| EDX |" << setw(tamanho) << EDX.value << " |" << endl;
 	}
+
+	void set_EAX (string value) { this->EAX.value = value; }
+	void set_EBX (string value) { this->EBX.value = value; }
+	void set_ECX (string value) { this->ECX.value = value; }
+	void set_EDX (string value) { this->EDX.value = value; }
 };
 
 ///////////SELETORES DE SEGMENTO///////////
 class RegSeletorSegmentos
 {
-  public:
+public:
 	Endereco<16> CS;
 	Endereco<16> SS;
 	Endereco<16> DS;
@@ -69,16 +80,19 @@ class RegSeletorSegmentos
 
 	void mostrar_dados()
 	{
-		cout << "CS: " << this->CS.end_hex << endl;
-		cout << "SS: " << this->SS.end_hex << endl;
-		cout << "DS: " << this->DS.end_hex << endl;
+		int tamanho = 16;
+		cout << endl << "| Seletores de Segmento |" << endl;
+		cout << string (tamanho + 9, '-') << endl;
+		cout << "| CS | " << setw(tamanho) << this->CS.end_hex << " |" << endl;
+		cout << "| SS | " << setw(tamanho) << this->SS.end_hex << " |" << endl;
+		cout << "| DS | " << setw(tamanho) << this->DS.end_hex << " |" <<endl;
 	}
 };
 
 ///////////OFFSET///////////
 class RegOffsets
 {
-  public:
+public:
 	Endereco<32> EIP;
 	Endereco<32> EBP;
 	Endereco<32> ESP;
@@ -102,11 +116,11 @@ class RegOffsets
 	void obter_entrada()
 	{
 		string eip_value, ebp_value;
-		cout << "Digite o endereço inicial do segmento EIP: ";
+		cout << "Digite o endereco inicial do segmento EIP: ";
 		cin >> eip_value;
 		this->EIP = Endereco<32> (eip_value);
 
-		cout << "Digite o endereço inicial do segmento EBP: ";
+		cout << "Digite o endereco inicial do segmento EBP: ";
 		cin >> ebp_value;
 		this->EBP = Endereco<32> (ebp_value);
 		this->ESP = Endereco<32> (ebp_value);
@@ -114,19 +128,24 @@ class RegOffsets
 
 	void mostrar_dados()
 	{
-		cout << endl << "Offset: " << endl;
-		cout << "EIP: " << this->EIP.end_hex << endl;
-		cout << "EBP: " << this->EBP.end_hex << endl;
-		cout << "ESP: " << this->ESP.end_hex << endl;
-		cout << "ESI: " << this->ESI.end_hex << endl;
-		cout << "EDI: " << this->EDI.end_hex << endl;
+		int tamanho = 10;
+		cout << endl << "|" << setw(tamanho) << "Offset" << setw(tamanho-2) << "|" << endl;
+		cout << string (tamanho + 9, '-') << endl;
+		cout << "| EIP |" << setw(tamanho) << this->EIP.end_hex << " |" << endl;
+		cout << "| EBP |" << setw(tamanho) << this->EBP.end_hex << " |" << endl;
+		cout << "| ESP |" << setw(tamanho) << this->ESP.end_hex << " |" << endl;
+		cout << "| ESI |" << setw(tamanho) << this->ESI.end_hex << " |" << endl;
+		cout << "| EDI |" << setw(tamanho) << this->EDI.end_hex << " |" << endl;
 	}
+
+	void set_ESI (string value) { this->ESI = Endereco<32> (value); }
+	void set_EDI (string value) { this->EDI = Endereco<32> (value); }
 };
 
 ///////////FLAG///////////
 class RegFlag
 {
-  public:
+public:
 	Endereco<32> ZF;
 	Endereco<32> SF;
 	Endereco<32> OF;
@@ -140,9 +159,11 @@ class RegFlag
 
 	void mostrar_dados()
 	{
-		cout << "Flags: " << endl;
-		cout << "ZF: " << ZF.end_hex << endl;
-		cout << "SF: " << SF.end_hex << endl;
-		cout << "OF: " << OF.end_hex << endl;
+		int tamanho = 12;
+		cout << endl << "| Registrador Flag |" << endl;
+		cout << string (tamanho + 8, '-') << endl;
+		cout << "| ZF |" << setw(tamanho) << ZF.end_hex << " |" << endl;
+		cout << "| SF |" << setw(tamanho) << SF.end_hex << " |" << endl;
+		cout << "| OF |" << setw(tamanho) << OF.end_hex << " |" << endl;
 	}
 };

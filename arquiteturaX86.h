@@ -25,9 +25,7 @@ public:
 	    TabelaDescritorSegmento &tabela, RegFlag &flag)
 	    : gerais (gerais), seletores_segmento (seletores_segmento),
 	      offset (offset), flag (flag), tabela (tabela), memoria (memoria)
-	{
-		seletores_segmento.mostrar_dados();
-	}
+	{}
 
 	void add (Endereco<32> &END1, Endereco<32> &END2);
 	void inc (Endereco<32> &END);
@@ -38,9 +36,15 @@ public:
 	void pop (Endereco<32> &END1);
 	void cmp (Endereco<32> &END1, Endereco<32> &END2);
 	void jmp (Endereco<32> &END);
+	void jmp_cond(Endereco<32> &END);
+	void jxx (Endereco<32> &END, string tipo);
 	void mul (Endereco<32> &END1, Endereco<32> &END2);
 	void sub (Endereco<32> &END1, Endereco<32> &END2);
-  void neg (Endereco<32> &END);
+  	void neg (Endereco<32> &END);
+	void AND (Endereco<32> &DST, Endereco<32> &SRC);
+	void OR (Endereco<32> &DST, Endereco<32> &SRC);
+	void XOR (Endereco<32> &DST, Endereco<32> &SRC);
+	void NOT (Endereco<32> &DST);
   
 	void acessarMemoria (Endereco<32> &end, string retorno)
 	{
@@ -87,7 +91,7 @@ public:
 
 void ArquiteturaX86::add (Endereco<32> &END1, Endereco<32> &END2)
 {
-Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
+	Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
 	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
 
 	end_linear = obterEnderecoLinear (tabela.data_segm, END2);
@@ -128,7 +132,6 @@ Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
 
 void ArquiteturaX86::mov (Endereco<32> &END1, Endereco<32> &END2)
 {
-	this->offset.EIP.increment (2);
 	Endereco<32> end_linear;
 	end_linear = obterEnderecoLinear (tabela.data_segm, END1);
 	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
@@ -136,17 +139,20 @@ void ArquiteturaX86::mov (Endereco<32> &END1, Endereco<32> &END2)
 	end_linear = obterEnderecoLinear (tabela.data_segm, END2);
 	this->memoria[end_linear.toLong()] = obterValorAlocado (2);
 
+	// Obtém instrução MOV em código
 	end_linear = obterEnderecoLinear (tabela.code_segm, offset.EIP);
-	acessarMemoria (end_linear, "MOV"); // Obtém MOV
+	acessarMemoria (end_linear, "MOV");
 	this->offset.EIP.increment (4);
 	this->offset.mostrar_dados();
 
+	// Obtém END1 em código
 	end_linear = obterEnderecoLinear (tabela.code_segm, offset.EIP);
-	acessarMemoria (end_linear, END1.end_hex); // Obtém END1
+	acessarMemoria (end_linear, END1.end_hex);
 	this->offset.EDI = (END1.end_hex);
 	this->offset.EIP.increment (4);
 	this->offset.mostrar_dados();
 
+	// Obtém END1 em código
 	end_linear = obterEnderecoLinear (tabela.code_segm, offset.EIP);
 	acessarMemoria (end_linear, END2.end_hex); // Obtém END2
 	this->offset.ESI = (END2.end_hex);
@@ -155,8 +161,7 @@ void ArquiteturaX86::mov (Endereco<32> &END1, Endereco<32> &END2)
 
 	end_linear = obterEnderecoLinear (tabela.data_segm, offset.ESI);
 	acessarMemoria (
-	    end_linear,
-	    memoria[end_linear.toLong()]); // Obtém valor apontado por END2
+	    end_linear,memoria[end_linear.toLong()]);
 	this->gerais.EAX.value = memoria[end_linear.toLong()];
 	this->gerais.mostrar_dados();
 
@@ -170,7 +175,6 @@ void ArquiteturaX86::mov (Endereco<32> &END1, Endereco<32> &END2)
 
 void ArquiteturaX86::push (Endereco<32> &END1)
 {
-	this->offset.EIP.increment (2);
 	Endereco<32> end_linear = obterEnderecoLinear (tabela.code_segm, END1);
 	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
 
@@ -203,7 +207,6 @@ void ArquiteturaX86::push (Endereco<32> &END1)
 
 void ArquiteturaX86::pop (Endereco<32> &END1)
 {
-	this->offset.EIP.increment (2);
 	Endereco<32> end_linear;
 	end_linear = obterEnderecoLinear (tabela.data_segm, END1);
 	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
@@ -238,7 +241,6 @@ void ArquiteturaX86::pop (Endereco<32> &END1)
 
 void ArquiteturaX86::inc (Endereco<32> &END)
 {
-	this->offset.EIP.increment (2);
 	Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END);
 	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
 
@@ -270,7 +272,6 @@ void ArquiteturaX86::inc (Endereco<32> &END)
 
 void ArquiteturaX86::dec (Endereco<32> &END)
 {
-	this->offset.EIP.increment (2);
 	Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END);
 	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
 
@@ -303,37 +304,41 @@ void ArquiteturaX86::dec (Endereco<32> &END)
 
 void ArquiteturaX86::cmp (Endereco<32> &END1, Endereco<32> &END2)
 {
-	this->offset.EIP.increment (2);
-
-	cout << "O que estaria presente no endereço 1? ";
-	string valor1;
-	cin >> valor1;
-
-	cout << "O que estaria presente no endereço 2? ";
-	string valor2;
-	cin >> valor2;
+	string valor1 = obterValorAlocado(1);
+	string valor2 = obterValorAlocado(2);
 
 	this->memoria[END1.toLong()] = valor1;
 	this->memoria[END2.toLong()] = valor2;
-
-	acessarMemoria (this->offset.EIP, "CMP");
-	this->offset.EIP.increment (4);
-	acessarMemoria (this->offset.EIP, END1.end_hex);
-	this->offset.mostrar_dados();
-
-	this->offset.EDI.end_hex = END1.end_hex;
+	
+	//acessando a instrução
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria (end_lin, "CMP");
 	this->offset.EIP.increment (4);
 	this->offset.mostrar_dados();
 
-	acessarMemoria (this->offset.EIP, END2.end_hex);
+	//acessando o proximo endereço em code
+	end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria (end_lin, END1.end_hex);
+	this->offset.set_EDI(END1.end_hex);
+	this->offset.set_ESI(END1.end_hex);
+	this->offset.EIP.increment (4);
+	this->offset.mostrar_dados();
+
+	//acessando o primeiro endereço em dados
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.ESI);
+	acessarMemoria (end_lin, memoria[END1.toLong()]);
+	HexNumber valorReg1 (memoria[END1.toLong()]);
+
+	//acessando o segundo endereço em code
+	end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria (end_lin, END2.end_hex);
 	this->offset.ESI.end_hex = END2.end_hex;
 	this->offset.EIP.increment (4);
 	this->offset.mostrar_dados();
 
-	acessarMemoria (this->offset.EDI, memoria[END1.toLong()]);
-	HexNumber valorReg1 (memoria[END1.toLong()]);
-
-	acessarMemoria (this->offset.ESI, memoria[END2.toLong()]);
+	//acessando o segundo endereço em dados
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.ESI);
+	acessarMemoria (end_lin, memoria[END2.toLong()]);
 	HexNumber valorReg2 (memoria[END2.toLong()]);
 
 	HexNumber resultado (valorReg1.value);
@@ -377,25 +382,109 @@ void ArquiteturaX86::cmp (Endereco<32> &END1, Endereco<32> &END2)
 
 void ArquiteturaX86::jmp (Endereco<32> &END)
 {
-	this->offset.EIP.increment (2);
-
-	// Exibe a instrução JMP
-	cout << "Executando JMP para o endereço: " << END.end_hex << endl;
-
-	acessarMemoria (this->offset.EIP, "JMP");
+	//buscando a instrução
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria (end_lin, "JMP");
 	this->offset.EIP.increment (4);
-	acessarMemoria (this->offset.EIP, END.end_hex);
-	// this->offset.mostrar_dados();
+	this->offset.mostrar_dados();
 
+	//acessando endereço
+	end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria (end_lin, END.end_hex);
 	// Atualiza EIP para endereço de destino
 	this->offset.EIP = END.end_hex;
+	this->offset.mostrar_dados();
 
-	acessarMemoria (this->offset.EIP, memoria[END.toLong()]);
+	
+	//acessarMemoria (this->offset.EIP, memoria[END.toLong()]); #acho que não precisa
 
-	cout << "Novo valor do EIP: " << this->offset.EIP.end_hex;
+	cout << "\nNovo valor do EIP: " << this->offset.EIP.end_hex;
 	this->offset.mostrar_dados();
 	this->gerais.mostrar_dados();
 }
+
+void ArquiteturaX86::jmp_cond(Endereco<32> &END){ //executa um jump, mas assume que jxx já foi resgatado do segmento de código
+	//acessando endereço
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria (end_lin, END.end_hex);
+	// Atualiza EIP para endereço de destino
+	this->offset.EIP = END.end_hex;
+	this->offset.mostrar_dados();
+
+	
+	//acessarMemoria (this->offset.EIP, memoria[END.toLong()]); #acho que não precisa
+
+	cout << "\nNovo valor do EIP: " << this->offset.EIP.end_hex;
+	this->offset.mostrar_dados();
+	this->gerais.mostrar_dados();
+
+}
+
+void ArquiteturaX86::jxx (Endereco<32> &END,string tipo){
+	//buscando a instrução
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
+	string end_pulo = obterValorAlocado(1);
+
+	for(auto &c : tipo){
+		c = toupper(c);
+	}
+
+	acessarMemoria(end_lin, "J"+tipo);
+	this->offset.EIP.increment(4);
+
+	this->offset.mostrar_dados();
+
+	// verificando qual tipo de jump será
+	bool willjmp = false;
+	enum jumps {G,GE,E,NE,L,LE};
+	map<string,jumps> tipo_jump= {
+		{"G",G},{"GE",GE},{"E",E},{"NE",NE},{"L",L},{"LE",LE}
+	};
+	switch (tipo_jump[tipo])
+	{
+		case G: { // >
+			if(this->flag.SF.end_hex == "0" && this->flag.ZF.end_hex == "0"){
+				willjmp = true;
+			}
+		}break;
+		case GE: { // >=
+			if(this->flag.SF.end_hex == "0"){// independente de ZF - se for 0 ou 1 o resultado é o mesmo
+				willjmp = true;
+			}
+		}break;
+		case E: { // ==
+			if(this->flag.ZF.end_hex == "1"){
+				willjmp = true;
+			}
+		}break;
+		case NE: { // !=
+			if(this->flag.ZF.end_hex == "0"){
+				willjmp = true;
+			}
+		}break;
+		case L: { // <
+			if(this->flag.SF.end_hex == "1"){
+				willjmp = true;
+			}
+		}break;
+		case LE: {// <=
+			if(this->flag.SF.end_hex == "1" || this->flag.ZF.end_hex == "1"){
+				willjmp = true;
+			}
+		}break;
+		default:{
+		}break;
+	}
+
+	if(willjmp){
+		this->jmp_cond(END);
+	}else{
+		this->offset.EIP.increment(4); // pula endereço fornecido ao jump se a condição for falsa
+		this->offset.mostrar_dados();
+	}
+
+
+};
 
 void ArquiteturaX86::xchg (Endereco<32> &END1, Endereco<32> &END2)
 {
@@ -537,6 +626,7 @@ void ArquiteturaX86::mul (Endereco<32> &END1, Endereco<32> &END2)
 	inserirMemoria (this->offset.EDI, this->gerais.EAX);
 	memoria[offset.EDI.toLong()] = gerais.EAX.value;
 }
+
 void ArquiteturaX86::neg(Endereco<32> &END){
     Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END);
     this->memoria[end_linear.toLong()] = obterValorAlocado (1);
@@ -563,3 +653,196 @@ void ArquiteturaX86::neg(Endereco<32> &END){
     memoria[offset.EDI.toLong()] = gerais.EAX.value;
 
 }
+
+void ArquiteturaX86::AND (Endereco<32> &DST,Endereco<32> &SRC){
+	//end_lin = endereço base de codigo + EIP
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP); 
+	string valor_dst = obterValorAlocado(1);
+	string valor_src = obterValorAlocado(2);
+
+	acessarMemoria(end_lin, "AND");
+	this->offset.EIP.increment(4);
+  
+	this->offset.mostrar_dados();
+
+	//CALCULANDO E ACESSANDO OS NOVOS ENDEREÇOS LINEARES
+	end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria(end_lin,DST.end_hex);
+	this->offset.EIP.increment(4);
+	this->offset.set_EDI(DST.end_hex);
+	this->offset.set_ESI(DST.end_hex);
+  
+	this->offset.mostrar_dados();
+
+	//acessando o endereço destino em dados
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.ESI);
+	acessarMemoria(end_lin,valor_dst);
+	this->gerais.set_EAX(valor_dst);
+  
+	this->gerais.mostrar_dados();
+
+	//repetindo processo para segundo endereço
+	end_lin= obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria(end_lin,SRC.end_hex);
+	this->offset.EIP.increment(4);
+	this->offset.set_ESI(SRC.end_hex);
+
+	this->offset.mostrar_dados();
+
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.ESI);
+	acessarMemoria(end_lin,valor_src);
+	this->gerais.set_EBX(valor_src);
+  
+	this->gerais.mostrar_dados(); 	
+
+	//fazendo a operação AND
+	long resultado = (this->gerais.EAX.toLong() & this->gerais.EBX.toLong());
+	this->gerais.EAX = HexNumber(resultado,true);
+	//armazenando
+	this->gerais.mostrar_dados();
+
+	//movendo eax para destino
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.EDI);
+	inserirMemoria(end_lin,this->gerais.EAX);
+
+
+};
+
+void ArquiteturaX86::OR (Endereco<32> &DST,Endereco<32> &SRC){
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
+	string valor_dst = obterValorAlocado(1);
+	string valor_src = obterValorAlocado(2);
+
+	acessarMemoria(end_lin, "OR");
+	this->offset.EIP.increment(4);
+  
+	this->offset.mostrar_dados();
+
+	//CALCULANDO E ACESSANDO OS NOVOS ENDEREÇOS LINEARES
+	end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria(end_lin,DST.end_hex);
+	this->offset.EIP.increment(4);
+	this->offset.set_EDI(DST.end_hex);
+	this->offset.set_ESI(DST.end_hex);
+  
+	this->offset.mostrar_dados();
+
+	//acessando o endereço destino em dados
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.ESI);
+	acessarMemoria(end_lin,valor_dst);
+	this->gerais.set_EAX(valor_dst);
+  
+	this->gerais.mostrar_dados();
+
+	//repetindo processo para segundo endereço
+	end_lin= obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria(end_lin,SRC.end_hex);
+	this->offset.EIP.increment(4);
+	this->offset.set_ESI(SRC.end_hex);
+
+	this->offset.mostrar_dados();
+
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.ESI);
+	acessarMemoria(end_lin,valor_src);
+	this->gerais.set_EBX(valor_src);
+  
+	this->gerais.mostrar_dados(); 
+	
+	//fazendo a operação OR
+	long resultado = (this->gerais.EAX.toLong() || this->gerais.EBX.toLong());
+	this->gerais.EAX = HexNumber(resultado,true);
+	//armazenando
+	this->gerais.mostrar_dados();
+
+	//movendo eax para destino
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.EDI);
+	inserirMemoria(end_lin,this->gerais.EAX);
+
+};
+
+
+void ArquiteturaX86::XOR (Endereco<32> &DST,Endereco<32> &SRC){
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
+	string valor_dst = obterValorAlocado(1);
+	string valor_src = obterValorAlocado(2);
+
+	acessarMemoria(end_lin, "XOR");
+	this->offset.EIP.increment(4);
+  
+	this->offset.mostrar_dados();
+
+	//CALCULANDO E ACESSANDO OS NOVOS ENDEREÇOS LINEARES - DESTINO
+	end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria(end_lin,DST.end_hex);
+	this->offset.EIP.increment(4);
+	this->offset.set_EDI(DST.end_hex);
+	this->offset.set_ESI(DST.end_hex);
+  
+	this->offset.mostrar_dados();
+
+	//acessando o endereço destino em dados
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.ESI);
+	acessarMemoria(end_lin,valor_dst);
+	this->gerais.set_EAX(valor_dst);
+  
+	this->gerais.mostrar_dados();
+
+	//REPETINDO PROCESSO PARA SEGUNDO ENDEREÇO - FONTE
+	end_lin= obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria(end_lin,SRC.end_hex);
+	this->offset.EIP.increment(4);
+	this->offset.set_ESI(SRC.end_hex);
+
+	this->offset.mostrar_dados();
+
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.ESI);
+	acessarMemoria(end_lin,valor_src);
+	this->gerais.set_EBX(valor_src);
+  
+	this->gerais.mostrar_dados(); 
+	//fazendo a operação XOR
+	long resultado = (this->gerais.EAX.toLong() ^ this->gerais.EBX.toLong());
+	this->gerais.EAX = HexNumber(resultado,true);
+	//armazenando
+	this->gerais.mostrar_dados();
+
+	//movendo eax para destino
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.EDI);
+	inserirMemoria(end_lin,this->gerais.EAX);
+
+
+};
+
+void ArquiteturaX86::NOT (Endereco<32> &DST){
+	//buscando a instrução
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
+	string valor_dst = obterValorAlocado(1);
+
+	acessarMemoria(end_lin, "NOT");
+	this->offset.EIP.increment(4);
+
+	this->offset.mostrar_dados();
+	
+	//CALCULANDO E ACESSANDO O PRÓXIMO ENDEREÇO LINEAR -DESTINO
+	end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria(end_lin,DST.end_hex);
+	this->offset.EIP.increment(4);
+	this->offset.set_EDI(DST.end_hex);
+	this->offset.set_ESI(DST.end_hex);
+
+	//acessando o endereço destino em dados
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.ESI);
+	acessarMemoria(end_lin,valor_dst);
+	this->gerais.set_EAX(valor_dst);
+  
+	this->gerais.mostrar_dados();
+
+	long complemento_de_1 = ~ this->gerais.EAX.toLong();
+	this->gerais.EAX = HexNumber(complemento_de_1,true);
+
+	this->gerais.mostrar_dados();
+
+	//movendo eax para destino
+	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.EDI);
+	inserirMemoria(end_lin,this->gerais.EAX);
+};
