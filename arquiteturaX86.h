@@ -36,6 +36,7 @@ public:
 	void pop (Endereco<32> &END1);
 	void cmp (Endereco<32> &END1, Endereco<32> &END2);
 	void jmp (Endereco<32> &END);
+	void jmp_cond(Endereco<32> &END);
 	void jxx (Endereco<32> &END, string tipo);
 	void mul (Endereco<32> &END1, Endereco<32> &END2);
 	void sub (Endereco<32> &END1, Endereco<32> &END2);
@@ -400,6 +401,23 @@ void ArquiteturaX86::jmp (Endereco<32> &END)
 	this->gerais.mostrar_dados();
 }
 
+void ArquiteturaX86::jmp_cond(Endereco<32> &END){ //executa um jump, mas assume que jxx já foi resgatado do segmento de código
+	//acessando endereço
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);
+	acessarMemoria (end_lin, END.end_hex);
+	// Atualiza EIP para endereço de destino
+	this->offset.EIP = END.end_hex;
+	this->offset.mostrar_dados();
+
+	
+	//acessarMemoria (this->offset.EIP, memoria[END.toLong()]); #acho que não precisa
+
+	cout << "\nNovo valor do EIP: " << this->offset.EIP.end_hex;
+	this->offset.mostrar_dados();
+	this->gerais.mostrar_dados();
+
+}
+
 void ArquiteturaX86::jxx (Endereco<32> &END,string tipo){
 	//buscando a instrução
 	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
@@ -422,32 +440,32 @@ void ArquiteturaX86::jxx (Endereco<32> &END,string tipo){
 	};
 	switch (tipo_jump[tipo])
 	{
-		case G: {
+		case G: { // >
 			if(this->flag.SF.end_hex == "0" && this->flag.ZF.end_hex == "0"){
 				willjmp = true;
 			}
 		}break;
-		case GE: {
+		case GE: { // >=
 			if(this->flag.SF.end_hex == "0"){// independente de ZF - se for 0 ou 1 o resultado é o mesmo
 				willjmp = true;
 			}
 		}break;
-		case E: {
+		case E: { // ==
 			if(this->flag.ZF.end_hex == "1"){
 				willjmp = true;
 			}
 		}break;
-		case NE: {
+		case NE: { // !=
 			if(this->flag.ZF.end_hex == "0"){
 				willjmp = true;
 			}
 		}break;
-		case L: {
+		case L: { // <
 			if(this->flag.SF.end_hex == "1"){
 				willjmp = true;
 			}
 		}break;
-		case LE: {
+		case LE: {// <=
 			if(this->flag.SF.end_hex == "1" || this->flag.ZF.end_hex == "1"){
 				willjmp = true;
 			}
@@ -457,9 +475,9 @@ void ArquiteturaX86::jxx (Endereco<32> &END,string tipo){
 	}
 
 	if(willjmp){
-		this->jmp(END);
+		this->jmp_cond(END);
 	}else{
-		this->offset.EIP.increment(4); // pula o jump se a condição for falsa
+		this->offset.EIP.increment(4); // pula endereço fornecido ao jump se a condição for falsa
 		this->offset.mostrar_dados();
 	}
 
@@ -635,7 +653,8 @@ void ArquiteturaX86::neg(Endereco<32> &END){
 }
 
 void ArquiteturaX86::AND (Endereco<32> &DST,Endereco<32> &SRC){
-	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
+	//end_lin = endereço base de codigo + EIP
+	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP); 
 	string valor_dst = obterValorAlocado(1);
 	string valor_src = obterValorAlocado(2);
 

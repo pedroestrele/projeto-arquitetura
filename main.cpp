@@ -24,6 +24,10 @@ enum instrucoes {
 	XOR,
 	NOT,
 	JXX,
+	CALL,
+	RET,
+	IRET,
+	LOOP,
 	STOP
 };
 
@@ -31,8 +35,9 @@ map<string, instrucoes> instrucao_map = {
     {"add", ADD}, {"inc", INC}, {"dec", DEC}, {"mov", MOV},   {"push", PUSH},
     {"pop", POP}, {"cmp", CMP}, {"jmp", JMP}, {"xchg", XCHG}, {"sub", SUB},
     {"mul", MUL}, {"neg", NEG}, {"and", AND}, {"or", OR},     {"xor", XOR},
-    {"not", NOT}, {"jxx", JXX}, {"je", JXX},  {"jg", JXX},    {"jge", JXX},
-    {"jne", JXX}, {"jl", JXX},  {"jle", JXX}, {"stop", STOP}};
+    {"not", NOT}, {"call",CALL},{"ret",RET} , {"iret", IRET}, {"loop", LOOP},
+	{"je", JXX} , {"jg", JXX} , {"jge", JXX}, {"jne", JXX} ,  {"jl", JXX},  
+	{"jle", JXX}, {"stop", STOP}};
 
 int main()
 {
@@ -227,14 +232,14 @@ int main()
 				Endereco<32> END (end_hex);
 				PC.call(END);
 			} break;
-			case LET: {
+			case RET: {
 				string end_hex, valor;
 				cout << "Digite o endereco: ";
 				cin >> end_hex;
 				cout << "Digite o valor: ";
 				cin >> valor;
 				Endereco<32> END (end_hex);
-				PC.let(END, valor);
+				PC.ret(END, valor);
 			} break;
 			case IRET: {
 				PC.iret();
