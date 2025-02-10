@@ -28,13 +28,13 @@ Desenvolva um programa que realize os cálculos de endereçamento e apresente o 
 * [X] Instrução INC
 * [X] Instrução DEC
 * [X] Instrução NEG
-* [ ] Instrução AND
-* [ ] Instrução OR
-* [ ] Instrução XOR
-* [ ] Instrução NOT
+* [X] Instrução AND
+* [X] Instrução OR
+* [X] Instrução XOR
+* [X] Instrução NOT
 * [X] Instrução CMP
 * [X] Instrução JMP
-* [ ] Instrução Jxx
+* [X] Instrução Jxx
 * [ ] Instrução CALL
 * [ ] Instrução RET
 * [ ] Instrução IRET
