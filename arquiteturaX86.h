@@ -888,45 +888,109 @@ void ArquiteturaX86::NOT (Endereco<32> &DST){
 	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.EDI);
 	inserirMemoria(end_lin,this->gerais.EAX);
 };
-/*void ArquiteturaX86::call (Endereco<32> &END){
 
-	// Ajuste da pilha, armazenando o endereço de retorno (EIP) e alterando o EIP para o novo endereço
+void ArquiteturaX86::call (Endereco<32> &END){
+    // Obter o endereço linear da instrução CALL
+    Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm, this->offset.EIP);
+    acessarMemoria(end_lin, "CALL");
+    this->offset.EIP.increment(4); 
+
+    // Exibir os dados após acessar a instrução CALL
+    this->offset.mostrar_dados();
+
+    // Reservando espaço na pilha para o endereço de retorno (EIP)
     offset.ESP.decrement(4);
-    inserirMemoria(offset.ESP, offset.EIP);
-    offset.EIP = END;
-}
+    inserirMemoria(offset.ESP, offset.EIP); 
+
+    // Exibir os dados após a atualização da pilha
+    this->offset.mostrar_dados();
+
+    // Atualizando o EIP com o endereço de destino
+    offset.EIP = END; 
+
+    // Exibir o estado final após a atualização do EIP
+    this->offset.mostrar_dados();
+};
 
 void ArquiteturaX86::ret (){
+    // Obter o endereço linear da instrução RET
+    Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm, this->offset.EIP);
+    acessarMemoria(end_lin, "RET"); 
+    this->offset.EIP.increment(4);  
 
-	// Recupera o endereço de retorno da pilha e atualiza o EIP e desempilha o endereço de retorno
-    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]);  
-    offset.EIP = memoria[offset.ESP.toLong()];
-    offset.ESP.increment(4);  
-}
+    // Exibir os dados após acessar a instrução RET
+    this->offset.mostrar_dados();
 
-void ArquiteturaX86::iret (){
-
-	 // Recupera o endereço de retorno, atualiza o EIP com o endereço de retorno e desempilha o endereço de retorno
-    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]); 
+    // Recuperando o endereço de retorno da pilha
+    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]);
     offset.EIP = memoria[offset.ESP.toLong()]; 
-    offset.ESP.increment(4);  
 
-	 // Recupera o CS da pilha, restaura o CS e desempilha o CS
-    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]); 
-    seletores_segmento.CS = memoria[offset.ESP.toLong()];
+    // Exibir os dados após a atualização do EIP
+    this->offset.mostrar_dados();
+
+    // Desempilha o endereço de retorno, incrementando o ponteiro ESP
     offset.ESP.increment(4);
 
-	 // Recupera as flags, restaura as flags e desempilha as flags
-    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]);
-    flag.value = memoria[offset.ESP.toLong()]; 
-    offset.ESP.increment(4);  
-}
+    // Exibir o estado final após a execução do RET
+    this->offset.mostrar_dados();
+};
+
+void ArquiteturaX86::iret (){
+    // Obter o endereço linear da instrução IRET
+    Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm, this->offset.EIP);
+    acessarMemoria(end_lin, "IRET");
+    this->offset.EIP.increment(4);  
+
+    // Exibir os dados após acessar a instrução IRET
+    this->offset.mostrar_dados();
+
+    // Recuperando o endereço de retorno da pilha
+    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]); 
+    offset.EIP = memoria[offset.ESP.toLong()]; 
+
+    // Exibir os dados após a atualização do EIP
+    this->offset.mostrar_dados();
+
+    // Desempilha o endereço de retorno, incrementando o ponteiro ESP
+    offset.ESP.increment(4);
+
+    // Recupera o CS da pilha e restaura o CS
+    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]); 
+    seletores_segmento.CS = memoria[offset.ESP.toLong()];  
+    offset.ESP.increment(4);
+
+    // Exibir os dados após restaurar o CS
+    this->offset.mostrar_dados();
+
+    // Recupera as flags da pilha e restaura as flags
+    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]); 
+    flag.value = memoria[offset.ESP.toLong()];  
+    offset.ESP.increment(4);
+
+    // Exibir o estado final após a execução do IRET
+    this->offset.mostrar_dados();
+};
 
 void ArquiteturaX86::loop (Endereco<32> &END){
+    // Obter o endereço linear da instrução LOOP
+    Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm, this->offset.EIP);
+    acessarMemoria(end_lin, "LOOP");
+    this->offset.EIP.increment(4); 
 
-	// Decrementa o ECX e, se não for zero, altera o EIP para repetir o laço
-    gerais.ECX.decrement();  
-    if (gerais.ECX.toLong() != 0)
+    // Exibir os dados após acessar a instrução LOOP
+    this->offset.mostrar_dados();
+
+    // Decrementa o registrador ECX
+    gerais.ECX.decrement();
+
+    // Exibir o conteúdo do registrador ECX após a decremetação
+    this->gerais.mostrar_dados();
+
+    // Verifica se ECX é diferente de zero
+    if (gerais.ECX.toLong() != 0) {
         offset.EIP = END;
-}
-*/
+    }
+
+    // Exibir o estado final após a execução do LOOP
+    this->offset.mostrar_dados();
+};
