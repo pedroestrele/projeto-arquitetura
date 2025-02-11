@@ -899,14 +899,15 @@ void ArquiteturaX86::call (Endereco<32> &END){
     this->offset.mostrar_dados();
 
     // Reservando espaço na pilha para o endereço de retorno (EIP)
+	HexNumber number = HexNumber(this->offset.EIP.end_hex);
     offset.ESP.decrement(4);
-    inserirMemoria(offset.ESP, offset.EIP); 
+    inserirMemoria(offset.ESP, number); 
 
     // Exibir os dados após a atualização da pilha
     this->offset.mostrar_dados();
 
     // Atualizando o EIP com o endereço de destino
-    offset.EIP = END; 
+    this->offset.EIP = END.end_hex; 
 
     // Exibir o estado final após a atualização do EIP
     this->offset.mostrar_dados();
@@ -964,7 +965,7 @@ void ArquiteturaX86::iret (){
 
     // Recupera as flags da pilha e restaura as flags
     acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]); 
-    flag.value = memoria[offset.ESP.toLong()];  
+    //flag.value = memoria[offset.ESP.toLong()];  
     offset.ESP.increment(4);
 
     // Exibir o estado final após a execução do IRET
@@ -981,14 +982,14 @@ void ArquiteturaX86::loop (Endereco<32> &END){
     this->offset.mostrar_dados();
 
     // Decrementa o registrador ECX
-    gerais.ECX.decrement();
+    gerais.ECX.dec();
 
     // Exibir o conteúdo do registrador ECX após a decremetação
     this->gerais.mostrar_dados();
 
     // Verifica se ECX é diferente de zero
     if (gerais.ECX.toLong() != 0) {
-        offset.EIP = END;
+        offset.EIP = END.end_hex;
     }
 
     // Exibir o estado final após a execução do LOOP
