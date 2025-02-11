@@ -364,6 +364,12 @@ void ArquiteturaX86::cmp (Endereco<32> &END1, Endereco<32> &END2)
 	acessarMemoria (end_lin, memoria[END2.toLong()]);
 	HexNumber valorReg2 (memoria[END2.toLong()]);
 
+
+	gerais.EAX.value = valorReg1.value;
+	gerais.EBX.value = valorReg2.value;
+
+	this->gerais.mostrar_dados();
+	
 	HexNumber resultado (valorReg1.value);
 	resultado.sub (valorReg2.value);
 
@@ -373,7 +379,7 @@ void ArquiteturaX86::cmp (Endereco<32> &END1, Endereco<32> &END2)
 		this->flag.ZF.end_hex = "0";
 	}
 
-	if (resultado.isNegative()) {
+	if (valorReg1.toLong()<valorReg2.toLong()) {
 		this->flag.SF.end_hex = "1"; // SF = 1 se o resultado for negativo
 	} else {
 		this->flag.SF.end_hex = "0";
@@ -397,10 +403,6 @@ void ArquiteturaX86::cmp (Endereco<32> &END1, Endereco<32> &END2)
 	     << endl;
 	this->flag.mostrar_dados();
 
-	gerais.EAX.value = valorReg1.value;
-	gerais.EBX.value = valorReg2.value;
-
-	this->gerais.mostrar_dados();
 }
 
 void ArquiteturaX86::jmp (Endereco<32> &END)
@@ -416,7 +418,6 @@ void ArquiteturaX86::jmp (Endereco<32> &END)
 	acessarMemoria (end_lin, END.end_hex);
 	// Atualiza EIP para endereço de destino
 	this->offset.EIP = END.end_hex;
-	this->offset.mostrar_dados();
 
 	
 	//acessarMemoria (this->offset.EIP, memoria[END.toLong()]); #acho que não precisa
@@ -432,7 +433,6 @@ void ArquiteturaX86::jmp_cond(Endereco<32> &END){ //executa um jump, mas assume 
 	acessarMemoria (end_lin, END.end_hex);
 	// Atualiza EIP para endereço de destino
 	this->offset.EIP = END.end_hex;
-	this->offset.mostrar_dados();
 
 	
 	//acessarMemoria (this->offset.EIP, memoria[END.toLong()]); #acho que não precisa
@@ -446,7 +446,6 @@ void ArquiteturaX86::jmp_cond(Endereco<32> &END){ //executa um jump, mas assume 
 void ArquiteturaX86::jxx (Endereco<32> &END,string tipo){
 	//buscando a instrução
 	Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm,this->offset.EIP);//end_lin = endereço base de codigo + EIP 
-	string end_pulo = obterValorAlocado(1);
 
 	for(auto &c : tipo){
 		c = toupper(c);
@@ -872,11 +871,12 @@ void ArquiteturaX86::NOT (Endereco<32> &DST){
 	this->offset.EIP.increment(4);
 	this->offset.set_EDI(DST.end_hex);
 	this->offset.set_ESI(DST.end_hex);
+	this->offset.mostrar_dados();
 
 	//acessando o endereço destino em dados
 	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.ESI);
 	acessarMemoria(end_lin,valor_dst);
-	this->gerais.set_EAX(valor_dst);
+	this->gerais.set_EBX(valor_dst);
   
 	this->gerais.mostrar_dados();
 
@@ -889,7 +889,7 @@ void ArquiteturaX86::NOT (Endereco<32> &DST){
 	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.EDI);
 	inserirMemoria(end_lin,this->gerais.EAX);
 };
-void ArquiteturaX86::call (Endereco<32> &END){
+/*void ArquiteturaX86::call (Endereco<32> &END){
 
 	// Ajuste da pilha, armazenando o endereço de retorno (EIP) e alterando o EIP para o novo endereço
     offset.ESP.decrement(4);
@@ -930,3 +930,4 @@ void ArquiteturaX86::loop (Endereco<32> &END){
     if (gerais.ECX.toLong() != 0)
         offset.EIP = END;
 }
+*/
