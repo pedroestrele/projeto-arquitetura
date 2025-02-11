@@ -16,7 +16,7 @@ class HexNumber
 
   HexNumber(int32_t value_in_long, bool t) : value (longToHex(value_in_long)) {}
 
-  static string longToHex(long binary) {
+  static string longToHex(int32_t binary) {
 
     stringstream ss;
       ss << hex << binary;
