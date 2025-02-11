@@ -244,12 +244,12 @@ int main()
 			case IRET: {
 				PC.iret();
 			} break;
-			case LOOP_: {
+			case LOOP: {
 				string end_hex;
 				cout << "Digite o endereco de destino do loop: ";
 				cin >> end_hex;
 				Endereco<32> END (end_hex);
-				PC.loop_(END);
+				PC.loop(END);
 			} break;
 			case STOP: {
 				continuar = false;
