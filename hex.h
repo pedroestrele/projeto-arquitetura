@@ -1,57 +1,57 @@
 #include <bits/stdc++.h>
 #include <sstream>
-
+#include <cstdint>
 using namespace std;
 #pragma once
 
 class HexNumber
 {
   private:
-	stringstream ss;
+  stringstream ss;
 
   public:
-	string value;
-	HexNumber() : value ("0") {}
-	HexNumber (string value) : value (value) {}
-	
-	HexNumber(long value_in_binary, bool t) : value (longToHex(value_in_binary)) {}
+  string value;
+  HexNumber() : value ("0") {}
+  HexNumber (string value) : value (value) {}
 
-	static string longToHex(long binary) {
-    	
-		stringstream ss;
-    	ss << hex << binary;
-    	return ss.str();
-	}
+  HexNumber(int32_t value_in_long, bool t) : value (longToHex(value_in_long)) {}
 
-	long toLong()
-	{
-		long n;
-		ss << hex << value;
-		ss >> n;
-		ss.clear();
+  static string longToHex(long binary) {
 
-		return n;
-	}
-	void add (HexNumber other)
-	{
-		ss << hex << toLong() + other.toLong();
-		ss >> value;
-		ss.clear();
-	}
+    stringstream ss;
+      ss << hex << binary;
+      return ss.str();
+  }
 
-	void sub (HexNumber other)
-	{
-		ss << hex << toLong() - other.toLong();
-		ss >> value;
-		ss.clear();
-	}
+  int32_t toLong()
+  {
+    int32_t n;
+    ss << hex << value;
+    ss >> n;
+    ss.clear();
 
-	void mul (HexNumber other)
-	{
-		ss << hex << toLong() * other.toLong();
-		ss >> value;
-		ss.clear();
-	}
+    return n;
+  }
+  void add (HexNumber other)
+  {
+    ss << hex << toLong() + other.toLong();
+    ss >> value;
+    ss.clear();
+  }
+
+  void sub (HexNumber other)
+  {
+    ss << hex << toLong() - other.toLong();
+    ss >> value;
+    ss.clear();
+  }
+
+  void mul (HexNumber other)
+  {
+    ss << hex << toLong() * other.toLong();
+    ss >> value;
+    ss.clear();
+  }
 
   void inc(){
     ss << hex << toLong() + 1;
@@ -72,4 +72,3 @@ class HexNumber
     return toLong() < 0;
   }
 };
-

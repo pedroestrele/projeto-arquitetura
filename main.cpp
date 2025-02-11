@@ -230,7 +230,7 @@ int main()
 				cout << "Digite o endereco para chamada: ";
 				cin >> end_hex;
 				Endereco<32> END (end_hex);
-				PC.call(END);
+			//	PC.call(END);
 			} break;
 			case RET: {
 				string end_hex, valor;
@@ -239,17 +239,17 @@ int main()
 				cout << "Digite o valor: ";
 				cin >> valor;
 				Endereco<32> END (end_hex);
-				PC.ret(END, valor);
+			//	PC.ret(END, valor);
 			} break;
 			case IRET: {
-				PC.iret();
+			//	PC.iret();
 			} break;
 			case LOOP: {
 				string end_hex;
 				cout << "Digite o endereco de destino do loop: ";
 				cin >> end_hex;
 				Endereco<32> END (end_hex);
-				PC.loop(END);
+			//	PC.loop(END);
 			} break;
 			case STOP: {
 				continuar = false;
