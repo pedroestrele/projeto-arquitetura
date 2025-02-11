@@ -146,15 +146,21 @@ public:
 class RegFlag
 {
 public:
-	Endereco<32> ZF;
-	Endereco<32> SF;
-	Endereco<32> OF;
-	RegFlag() : ZF (Endereco<32>()), SF (Endereco<32>()), OF (Endereco<32>()) {}
+	HexNumber ZF;
+	HexNumber SF;
+	HexNumber OF;
+	RegFlag() : ZF (HexNumber()), SF (HexNumber()), OF (HexNumber()) {}
+	void set (string r)
+	{
+		this->ZF.value = r.substr(0, 3);
+		this->SF.value = r.substr(3, 3);
+		this->OF.value = r.substr(6, 2);
+	}
 	RegFlag (string ZF, string SF, string OF)
 	{
-		this->ZF.end_hex = ZF;
-		this->SF.end_hex = SF;
-		this->OF.end_hex = OF;
+		this->ZF.value = ZF;
+		this->SF.value = SF;
+		this->OF.value = OF;
 	}
 
 	void mostrar_dados()
@@ -162,8 +168,8 @@ public:
 		int tamanho = 12;
 		cout << endl << "| Registrador Flag |" << endl;
 		cout << string (tamanho + 8, '-') << endl;
-		cout << "| ZF |" << setw(tamanho) << ZF.end_hex << " |" << endl;
-		cout << "| SF |" << setw(tamanho) << SF.end_hex << " |" << endl;
-		cout << "| OF |" << setw(tamanho) << OF.end_hex << " |" << endl;
+		cout << "| SF |" << setw(tamanho) << SF.value << " |" << endl;
+		cout << "| OF |" << setw(tamanho) << OF.value << " |" << endl;
+		cout << "| ZF |" << setw(tamanho) << ZF.value << " |" << endl;
 	}
 };

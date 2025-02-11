@@ -46,7 +46,7 @@ public:
 	void XOR (Endereco<32> &DST, Endereco<32> &SRC);
 	void NOT (Endereco<32> &DST);
 	void call (Endereco<32> &END);
-	void ret ();
+	void ret (Endereco<32> &END);
 	void iret ();
 	void loop (Endereco<32> &END);
   
@@ -373,15 +373,15 @@ void ArquiteturaX86::cmp (Endereco<32> &END1, Endereco<32> &END2)
 	resultado.sub (valorReg2.value);
 
 	if (valorReg1.equals (valorReg2)) {
-		this->flag.ZF.end_hex = "1"; // ZF = 1 se os valores forem iguais
+		this->flag.ZF.value = "1"; // ZF = 1 se os valores forem iguais
 	} else {
-		this->flag.ZF.end_hex = "0";
+		this->flag.ZF.value = "0";
 	}
 
 	if (valorReg1.toLong()<valorReg2.toLong()) {
-		this->flag.SF.end_hex = "1"; // SF = 1 se o resultado for negativo
+		this->flag.SF.value = "1"; // SF = 1 se o resultado for negativo
 	} else {
-		this->flag.SF.end_hex = "0";
+		this->flag.SF.value = "0";
 	}
 
 	// Pega o bit de sinal para fazer a comparação
@@ -393,9 +393,9 @@ void ArquiteturaX86::cmp (Endereco<32> &END1, Endereco<32> &END2)
 	// sinalOperando1)
 	if ((sinalOperando1 == sinalOperando2) &&
 	    (sinalResultado != sinalOperando1)) {
-		this->flag.OF.end_hex = "1"; // OF = 1 se ocorreu overflow
+		this->flag.OF.value = "1"; // OF = 1 se ocorreu overflow
 	} else {
-		this->flag.OF.end_hex = "0";
+		this->flag.OF.value = "0";
 	}
 
 	cout << "Resultado da comparação (valorReg1 - valorReg2): " << resultado.value
@@ -464,32 +464,32 @@ void ArquiteturaX86::jxx (Endereco<32> &END,string tipo){
 	switch (tipo_jump[tipo])
 	{
 		case G: { // >
-			if(this->flag.SF.end_hex == "0" && this->flag.ZF.end_hex == "0"){
+			if(this->flag.SF.value == "0" && this->flag.ZF.value == "0"){
 				willjmp = true;
 			}
 		}break;
 		case GE: { // >=
-			if(this->flag.SF.end_hex == "0"){// independente de ZF - se for 0 ou 1 o resultado é o mesmo
+			if(this->flag.SF.value == "0"){// independente de ZF - se for 0 ou 1 o resultado é o mesmo
 				willjmp = true;
 			}
 		}break;
 		case E: { // ==
-			if(this->flag.ZF.end_hex == "1"){
+			if(this->flag.ZF.value == "1"){
 				willjmp = true;
 			}
 		}break;
 		case NE: { // !=
-			if(this->flag.ZF.end_hex == "0"){
+			if(this->flag.ZF.value == "0"){
 				willjmp = true;
 			}
 		}break;
 		case L: { // <
-			if(this->flag.SF.end_hex == "1"){
+			if(this->flag.SF.value == "1"){
 				willjmp = true;
 			}
 		}break;
 		case LE: {// <=
-			if(this->flag.SF.end_hex == "1" || this->flag.ZF.end_hex == "1"){
+			if(this->flag.SF.value == "1" || this->flag.ZF.value == "1"){
 				willjmp = true;
 			}
 		}break;
@@ -900,21 +900,26 @@ void ArquiteturaX86::call (Endereco<32> &END){
 
     // Reservando espaço na pilha para o endereço de retorno (EIP)
     offset.ESP.decrement(4);
-    inserirMemoria(offset.ESP, offset.EIP); 
+		end_lin = obterEnderecoLinear(this->tabela.stack_segm, offset.ESP);
+		HexNumber novo_eip(offset.EIP.end_hex);
+    inserirMemoria(end_lin, novo_eip); 
 
     // Exibir os dados após a atualização da pilha
     this->offset.mostrar_dados();
 
     // Atualizando o EIP com o endereço de destino
-    offset.EIP = END; 
+    offset.EIP.end_hex = novo_eip.value; 
 
     // Exibir o estado final após a atualização do EIP
     this->offset.mostrar_dados();
 };
 
-void ArquiteturaX86::ret (){
-    // Obter o endereço linear da instrução RET
-    Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm, this->offset.EIP);
+void ArquiteturaX86::ret (Endereco<32> &END){
+    Endereco<32> end_lin = obterEnderecoLinear(this->tabela.stack_segm, END);
+		memoria[end_lin.toLong()] = obterValorAlocado(1);
+
+		// Obter o endereço linear da instrução RET
+    end_lin = obterEnderecoLinear(this->tabela.code_segm, this->offset.EIP);
     acessarMemoria(end_lin, "RET"); 
     this->offset.EIP.increment(4);  
 
@@ -922,6 +927,7 @@ void ArquiteturaX86::ret (){
     this->offset.mostrar_dados();
 
     // Recuperando o endereço de retorno da pilha
+		end_lin = obterEnderecoLinear(this->tabela.stack_segm, this->offset.ESP);
     acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]);
     offset.EIP = memoria[offset.ESP.toLong()]; 
 
@@ -936,8 +942,16 @@ void ArquiteturaX86::ret (){
 };
 
 void ArquiteturaX86::iret (){
+		Endereco<32> end_lin =  obterEnderecoLinear(this->tabela.stack_segm, this->offset.ESP);
+		cout << "Digite o valor empilhado do flag: ";
+		cin >> memoria[end_lin.toLong()+8];
+		cout << "Digite o valor empilhado de CS: ";
+		cin >> memoria[end_lin.toLong()+4];
+		cout << "Digite o valor empilhado de EIP: ";
+		cin >> memoria[end_lin.toLong()];
+
     // Obter o endereço linear da instrução IRET
-    Endereco<32> end_lin = obterEnderecoLinear(this->tabela.code_segm, this->offset.EIP);
+     end_lin = obterEnderecoLinear(this->tabela.code_segm, this->offset.EIP);
     acessarMemoria(end_lin, "IRET");
     this->offset.EIP.increment(4);  
 
@@ -945,8 +959,9 @@ void ArquiteturaX86::iret (){
     this->offset.mostrar_dados();
 
     // Recuperando o endereço de retorno da pilha
-    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]); 
-    offset.EIP = memoria[offset.ESP.toLong()]; 
+		end_lin = obterEnderecoLinear(this->tabela.stack_segm, this->offset.ESP);
+    acessarMemoria(end_lin, memoria[end_lin.toLong()]); 
+    offset.EIP = memoria[end_lin.toLong()]; 
 
     // Exibir os dados após a atualização do EIP
     this->offset.mostrar_dados();
@@ -955,16 +970,18 @@ void ArquiteturaX86::iret (){
     offset.ESP.increment(4);
 
     // Recupera o CS da pilha e restaura o CS
-    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]); 
-    seletores_segmento.CS = memoria[offset.ESP.toLong()];  
+		end_lin = obterEnderecoLinear(this->tabela.stack_segm, offset.ESP);
+    acessarMemoria(end_lin, memoria[end_lin.toLong()]); 
+    seletores_segmento.CS = memoria[end_lin.toLong()];  
     offset.ESP.increment(4);
 
     // Exibir os dados após restaurar o CS
     this->offset.mostrar_dados();
 
     // Recupera as flags da pilha e restaura as flags
-    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]); 
-    flag.value = memoria[offset.ESP.toLong()];  
+		end_lin = obterEnderecoLinear(this->tabela.stack_segm, offset.ESP);
+    acessarMemoria(end_lin, memoria[end_lin.toLong()]); 
+    flag.set(memoria[end_lin.toLong()]);  
     offset.ESP.increment(4);
 
     // Exibir o estado final após a execução do IRET
@@ -981,14 +998,14 @@ void ArquiteturaX86::loop (Endereco<32> &END){
     this->offset.mostrar_dados();
 
     // Decrementa o registrador ECX
-    gerais.ECX.decrement();
+    gerais.ECX.dec();
 
     // Exibir o conteúdo do registrador ECX após a decremetação
     this->gerais.mostrar_dados();
 
     // Verifica se ECX é diferente de zero
     if (gerais.ECX.toLong() != 0) {
-        offset.EIP = END;
+        offset.EIP.end_hex = END.end_hex;
     }
 
     // Exibir o estado final após a execução do LOOP
