@@ -86,8 +86,7 @@ public:
 		return valor;
 	}
 
-	Endereco<32>
-	obterEnderecoLinear (DescritorSegmento &descritor, Endereco<32> &end)
+	Endereco<32> obterEnderecoLinear (DescritorSegmento &descritor, Endereco<32> &end)
 	{
 		Endereco<32> end_linear (descritor.end_base.end_hex);
 		end_linear.increment (end.toLong());
