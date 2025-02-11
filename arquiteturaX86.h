@@ -99,51 +99,52 @@ public:
 
 void ArquiteturaX86::add (Endereco<32> &END1, Endereco<32> &END2)
 {
-	// Obtem endereço linear de END1 e solicita um valor para estar presente nesse endereço
-	Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
-	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
-	
-	// Obtem endereço linear de END2 e solicita um valor para estar presente nesse endereço
-	end_linear = obterEnderecoLinear (tabela.data_segm, END2);
-	this->memoria[end_linear.toLong()] = obterValorAlocado (2);
+    // Obtem endereço linear de END1 e solicita um valor para estar presente nesse endereço
+    Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
+    this->memoria[end_linear.toLong()] = obterValorAlocado (1);
 
-	//Calcula endereço linear de código, acessa a memória e retorna a instrução add, atualiza IP
-	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, "ADD");
-	
-	this->offset.EIP.increment (2);
-	
-	//Calcula endereço linear de código, acessa memória e retorna o Endereço 1, atualiza IP, atualiza EDI com END1
-	offset.mostrar_dados();
-	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, END1.end_hex);
-	this->offset.EDI.end_hex = END1.end_hex;
-	this->offset.EIP.increment (4);
-	this->offset.mostrar_dados();
+    // Obtem endereço linear de END2 e solicita um valor para estar presente nesse endereço
+    end_linear = obterEnderecoLinear (tabela.data_segm, END2);
+    this->memoria[end_linear.toLong()] = obterValorAlocado (2);
 
-	//Mesma coisa porém com END2 no lugar de END1 e com ESI no lugar de EDI	
-	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, END2.end_hex);
-	this->offset.ESI.end_hex = END2.end_hex;
-	this->offset.EIP.increment (4);
-	this->offset.mostrar_dados();
-	
-	//acessa o valor presente em END1, guarda-o em EAX
-	end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
-	acessarMemoria (end_linear, memoria[end_linear.toLong()]);
-	gerais.EAX.value = memoria[end_linear.toLong()];
-	this->gerais.mostrar_dados();
-	
-	//acessa o valor presente em END2, soma-o com o valor de EAX, guarda o resultado em EAX
-	end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.ESI);
-	acessarMemoria (end_linear, memoria[END2.toLong()]);
-	gerais.EAX.add (memoria[end_linear.toLong()]);
-	this->gerais.mostrar_dados();
+    //Calcula endereço linear de código, acessa a memória e retorna a instrução add, atualiza IP
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, "ADD");
 
-	//Insere o valor de EAX no endereço de destino
-	end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
-	inserirMemoria (end_linear, gerais.EAX);
-	memoria[end_linear.toLong()] = gerais.EAX.value;
+    this->offset.EIP.increment (2);
+
+    //Calcula endereço linear de código, acessa memória e retorna o Endereço 1, atualiza IP, atualiza ESI com END1, Atualiza EDI com END1
+    offset.mostrar_dados();
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, END1.end_hex);
+    this->offset.ESI.end_hex = END1.end_hex;
+    this->offset.EDI.end_hex = END1.end_hex;
+    this->offset.EIP.increment (4);
+    this->offset.mostrar_dados();
+
+    //acessa o valor presente em END1, guarda-o em EAX
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.ESI);
+    acessarMemoria (end_linear, memoria[end_linear.toLong()]);
+    gerais.EAX.value = memoria[end_linear.toLong()];
+    this->gerais.mostrar_dados();
+
+    //Calcula endereço linear de código, acessa memória e retorna o Endereço 2, atualiza IP, atualiza ESI com END2
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, END2.end_hex);
+    this->offset.ESI.end_hex = END2.end_hex;
+    this->offset.EIP.increment (4);
+    this->offset.mostrar_dados();
+
+    //acessa o valor presente em END2, soma-o com o valor de EAX, guarda o resultado em EAX
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.ESI);
+    acessarMemoria (end_linear, memoria[end_linear.toLong()]);
+    gerais.EAX.add (memoria[end_linear.toLong()]);
+    this->gerais.mostrar_dados();
+
+    //Insere o valor de EAX no endereço de destino
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
+    inserirMemoria (end_linear, gerais.EAX);
+    memoria[end_linear.toLong()] = gerais.EAX.value;
 }
 
 void ArquiteturaX86::mov (Endereco<32> &END1, Endereco<32> &END2)
@@ -562,109 +563,102 @@ void ArquiteturaX86::xchg (Endereco<32> &END1, Endereco<32> &END2)
 
 void ArquiteturaX86::sub (Endereco<32> &END1, Endereco<32> &END2)
 {
-	// Obtem endereço linear de END1 e solicita um valor para estar presente nesse endereço
+    // Obtem endereço linear de END1 e solicita um valor para estar presente nesse endereço
+    Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
+    this->memoria[end_linear.toLong()] = obterValorAlocado (1);
 
-	Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
-	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
-	
-	// Obtem endereço linear de END2 e solicita um valor para estar presente nesse endereço
+    // Obtem endereço linear de END2 e solicita um valor para estar presente nesse endereço
+    end_linear = obterEnderecoLinear (tabela.data_segm, END2);
+    this->memoria[end_linear.toLong()] = obterValorAlocado (2);
 
-	end_linear = obterEnderecoLinear (tabela.data_segm, END2);
-	this->memoria[end_linear.toLong()] = obterValorAlocado (2);
+    //Calcula endereço linear de código, acessa a memória e retorna a instrução sub, atualiza IP
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, "SUB");
 
-	//Calcula endereço linear de código, acessa a memória e retorna a instrução SUB, atualiza IP
-	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, "SUB");
-	this->offset.EIP.increment (2);
+    this->offset.EIP.increment (2);
 
-	offset.mostrar_dados();
+    //Calcula endereço linear de código, acessa memória e retorna o Endereço 1, atualiza IP, atualiza ESI com END1, Atualiza EDI com END1
+    offset.mostrar_dados();
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, END1.end_hex);
+    this->offset.ESI.end_hex = END1.end_hex;
+    this->offset.EDI.end_hex = END1.end_hex;
+    this->offset.EIP.increment (4);
+    this->offset.mostrar_dados();
 
-	
-	//Calcula endereço linear de código, acessa memória e retorna o End1, atualiza IP, atualiza EDI com END1
-	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, END1.end_hex);
+    //acessa o valor presente em END1, guarda-o em EAX
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.ESI);
+    acessarMemoria (end_linear, memoria[end_linear.toLong()]);
+    gerais.EAX.value = memoria[end_linear.toLong()];
+    this->gerais.mostrar_dados();
 
-	this->offset.EDI.end_hex = END1.end_hex;
-	this->offset.EIP.increment (4);
-	this->offset.mostrar_dados();
+    //Calcula endereço linear de código, acessa memória e retorna o Endereço 2, atualiza IP, atualiza ESI com END2
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, END2.end_hex);
+    this->offset.ESI.end_hex = END2.end_hex;
+    this->offset.EIP.increment (4);
+    this->offset.mostrar_dados();
 
-	//Mesma coisa porém com END2 no lugar de END1 e com ESI no lugar de EDI
-	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, END2.end_hex);
-	this->offset.ESI.end_hex = END2.end_hex;
-	this->offset.EIP.increment (4);
-	this->offset.mostrar_dados();
+    //acessa o valor presente em END2, subtrai-o com o valor de EAX, guarda o resultado em EAX
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.ESI);
+    acessarMemoria (end_linear, memoria[end_linear.toLong()]);
+    gerais.EAX.sub (memoria[end_linear.toLong()]);
+    this->gerais.mostrar_dados();
 
-	
-	//acessa o valor presente em END1, guarda-o em EAX
-	end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
-	acessarMemoria (end_linear, memoria[end_linear.toLong()]);
-	gerais.EAX.value = memoria[end_linear.toLong()];
-	this->gerais.mostrar_dados();
-
-	//acessa o valor presente em END2, subtrai com o valor de EAX, guarda o resultado em EAX
-
-	end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.ESI);
-	acessarMemoria (end_linear, memoria[end_linear.toLong()]);
-	gerais.EAX.sub (memoria[end_linear.toLong()]);
-
-	this->gerais.mostrar_dados();
-	//Insere o valor de EAX no endereço de destino
-	end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
-	inserirMemoria (end_linear, this->gerais.EAX);
-	memoria[offset.EDI.toLong()] = gerais.EAX.value;
+    //Insere o valor de EAX no endereço de destino
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
+    inserirMemoria (end_linear, gerais.EAX);
+    memoria[end_linear.toLong()] = gerais.EAX.value;
 }
 
 void ArquiteturaX86::mul (Endereco<32> &END1, Endereco<32> &END2)
 {
-	// Obtem endereço linear de END1 e solicita um valor para estar presente nesse endereço
-	Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
-	this->memoria[end_linear.toLong()] = obterValorAlocado (1);
+    // Obtem endereço linear de END1 e solicita um valor para estar presente nesse endereço
+    Endereco<32> end_linear = obterEnderecoLinear (tabela.data_segm, END1);
+    this->memoria[end_linear.toLong()] = obterValorAlocado (1);
 
-	
-	// Obtem endereço linear de END2 e solicita um valor para estar presente nesse endereço
-	end_linear = obterEnderecoLinear (tabela.data_segm, END2);
-	this->memoria[end_linear.toLong()] = obterValorAlocado (2);
+    // Obtem endereço linear de END2 e solicita um valor para estar presente nesse endereço
+    end_linear = obterEnderecoLinear (tabela.data_segm, END2);
+    this->memoria[end_linear.toLong()] = obterValorAlocado (2);
 
-	//Calcula endereço linear de código, acessa a memória e retorna a instrução MUL, atualiza IP
+    //Calcula endereço linear de código, acessa a memória e retorna a instrução mul, atualiza IP
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, "MUL");
 
-	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, "MUL");
-	this->offset.EIP.increment (2);
+    this->offset.EIP.increment (2);
 
-	offset.mostrar_dados();
-	
-	//Calcula endereço linear de código, acessa memória e retorna o Endereço 1, atualiza IP, atualiza EDI com END1
-	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, END1.end_hex);
+    //Calcula endereço linear de código, acessa memória e retorna o Endereço 1, atualiza IP, atualiza ESI com END1, Atualiza EDI com END1
+    offset.mostrar_dados();
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, END1.end_hex);
+    this->offset.ESI.end_hex = END1.end_hex;
+    this->offset.EDI.end_hex = END1.end_hex;
+    this->offset.EIP.increment (4);
+    this->offset.mostrar_dados();
 
-	this->offset.EDI.end_hex = END1.end_hex;
-	this->offset.EIP.increment (4);
-	this->offset.mostrar_dados();
+    //acessa o valor presente em END1, guarda-o em EAX
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.ESI);
+    acessarMemoria (end_linear, memoria[end_linear.toLong()]);
+    gerais.EAX.value = memoria[end_linear.toLong()];
+    this->gerais.mostrar_dados();
 
-	//Mesma coisa porém com END2 no lugar de END1 e com ESI no lugar de EDI
-	end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
-	acessarMemoria (end_linear, END2.end_hex);
-	this->offset.ESI.end_hex = END2.end_hex;
-	this->offset.EIP.increment (4);
-	this->offset.mostrar_dados();
+    //Calcula endereço linear de código, acessa memória e retorna o Endereço 2, atualiza IP, atualiza ESI com END2
+    end_linear = obterEnderecoLinear (tabela.code_segm, this->offset.EIP);
+    acessarMemoria (end_linear, END2.end_hex);
+    this->offset.ESI.end_hex = END2.end_hex;
+    this->offset.EIP.increment (4);
+    this->offset.mostrar_dados();
 
-	//acessa o valor presente em END1, guarda-o em EAX
-	end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
-	acessarMemoria (end_linear, memoria[end_linear.toLong()]);
-	gerais.EAX.value = memoria[end_linear.toLong()];
-	this->gerais.mostrar_dados();
+    //acessa o valor presente em END2, multiplica-o com o valor de EAX, guarda o resultado em EAX
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.ESI);
+    acessarMemoria (end_linear, memoria[end_linear.toLong()]);
+    gerais.EAX.mul (memoria[end_linear.toLong()]);
+    this->gerais.mostrar_dados();
 
-	//acessa o valor presente em END2, multiplica-o com o valor de EAX, guarda o resultado em EAX
-	end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.ESI);
-	acessarMemoria (end_linear, memoria[end_linear.toLong()]);
-	gerais.EAX.mul (memoria[end_linear.toLong()]);
-	this->gerais.mostrar_dados();
-
-	//Insere o valor de EAX no endereço de destino
-	end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
-	inserirMemoria (this->offset.EDI, this->gerais.EAX);
-	memoria[offset.EDI.toLong()] = gerais.EAX.value;
+    //Insere o valor de EAX no endereço de destino
+    end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.EDI);
+    inserirMemoria (end_linear, gerais.EAX);
+    memoria[end_linear.toLong()] = gerais.EAX.value;
 }
 
 void ArquiteturaX86::neg(Endereco<32> &END){
