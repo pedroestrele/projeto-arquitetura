@@ -49,4 +49,11 @@ public:
 		ss >> this->end_hex;
 		ss.clear();
 	}
+	void decrement (int pass)
+	{
+		long end_long = toLong() - pass;
+		ss << hex << end_long;
+		ss >> this->end_hex;
+		ss.clear();
+	}
 };
