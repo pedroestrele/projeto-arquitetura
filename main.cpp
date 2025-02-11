@@ -239,7 +239,7 @@ int main()
 				cout << "Digite o valor: ";
 				cin >> valor;
 				Endereco<32> END (end_hex);
-				PC.ret(END, valor);
+				//PC.ret(END, valor);
 			} break;
 			case IRET: {
 				PC.iret();
