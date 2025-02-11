@@ -77,14 +77,16 @@ void TabelaDescritorSegmento::entrada_de_tabela()
 {
 	cout << "\nDigite os endereços de inicio de cada segmento da tabela de "
 	        "segmentos:";
+	
 	cout << "\nCod_Seg: ";
 	cin >> this->code_segm.end_base.end_hex;
+	cout << "Digite o endereço limite do segmento de código: ";
+	cin >> this->code_segm.end_lim.end_hex;
 
 	cout << "Stack_Seg: ";
 	cin >> this->stack_segm.end_base.end_hex;
-	this->code_segm.end_lim.end_hex = this->stack_segm.end_base.end_hex;
-	this->code_segm.end_lim.increment (-1);
-
+	cout << "Digite o endereço limite do segmento de pilha: ";
+	cin >> this->stack_segm.end_lim.end_hex;
 	/*if(this->code_segm.end_base.toLong() >= this->stack_segm.end_base){
 	    cout<< "GPF: O endereço de inicio do segmento de código deve ser menor
 	que o endereço de inicio do segmento de pilha.\n";
@@ -92,8 +94,6 @@ void TabelaDescritorSegmento::entrada_de_tabela()
 
 	cout << "Data_Seg: ";
 	cin >> this->data_segm.end_base.end_hex;
-	this->stack_segm.end_lim.end_hex = this->data_segm.end_base.end_hex;
-	this->stack_segm.end_lim.increment (-1);
 
 	/*if(this->data_segm.end_base <= this->stack_segm.end_base){
 	    cout<<"GPF: O endereço de inicio do segmento de pilha deve ser menor que

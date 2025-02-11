@@ -66,7 +66,15 @@ public:
 		cout << "BUS DATA" << endl;
 	};
 
-	string obterValorAlocado (auto n)
+	string obterValorAlocado (int n)
+	{
+		string valor;
+		cout << "O que estaria presente no endereço " << n << "? ";
+		cin >> valor;
+		return valor;
+	}
+	
+	string obterValorAlocado (string n)
 	{
 		string valor;
 		cout << "O que estaria presente no endereço " << n << "? ";
