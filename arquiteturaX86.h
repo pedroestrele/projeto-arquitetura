@@ -899,6 +899,7 @@ void ArquiteturaX86::call (Endereco<32> &END){
     this->offset.mostrar_dados();
 
     // Reservando espaço na pilha para o endereço de retorno (EIP)
+	HexNumber number = HexNumber(this->offset.EIP.end_hex);
     offset.ESP.decrement(4);
 		end_lin = obterEnderecoLinear(this->tabela.stack_segm, offset.ESP);
 		HexNumber novo_eip(offset.EIP.end_hex);
@@ -908,7 +909,7 @@ void ArquiteturaX86::call (Endereco<32> &END){
     this->offset.mostrar_dados();
 
     // Atualizando o EIP com o endereço de destino
-    offset.EIP.end_hex = novo_eip.value; 
+    this->offset.EIP = END.end_hex;
 
     // Exibir o estado final após a atualização do EIP
     this->offset.mostrar_dados();
@@ -1005,7 +1006,7 @@ void ArquiteturaX86::loop (Endereco<32> &END){
 
     // Verifica se ECX é diferente de zero
     if (gerais.ECX.toLong() != 0) {
-        offset.EIP.end_hex = END.end_hex;
+        offset.EIP = END.end_hex;
     }
 
     // Exibir o estado final após a execução do LOOP
