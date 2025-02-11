@@ -642,7 +642,7 @@ void ArquiteturaX86::mul (Endereco<32> &END1, Endereco<32> &END2)
     //acessa o valor presente em END2, multiplica-o com o valor de EAX, guarda o resultado em EAX
     end_linear = obterEnderecoLinear (tabela.data_segm, this->offset.ESI);
     acessarMemoria (end_linear, memoria[end_linear.toLong()]);
-    gerais.EAX.sub (memoria[end_linear.toLong()]);
+    gerais.EAX.mul (memoria[end_linear.toLong()]);
     this->gerais.mostrar_dados();
 
     //Insere o valor de EAX no endereço de destino
