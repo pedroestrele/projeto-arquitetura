@@ -45,6 +45,10 @@ public:
 	void OR (Endereco<32> &DST, Endereco<32> &SRC);
 	void XOR (Endereco<32> &DST, Endereco<32> &SRC);
 	void NOT (Endereco<32> &DST);
+	void call (Endereco<32> &END);
+	void ret ();
+	void iret ();
+	void loop (Endereco<32> &END);
   
 	void acessarMemoria (Endereco<32> &end, string retorno)
 	{
@@ -885,3 +889,44 @@ void ArquiteturaX86::NOT (Endereco<32> &DST){
 	end_lin = obterEnderecoLinear(this->tabela.data_segm,this->offset.EDI);
 	inserirMemoria(end_lin,this->gerais.EAX);
 };
+void ArquiteturaX86::call (Endereco<32> &END){
+
+	// Ajuste da pilha, armazenando o endereço de retorno (EIP) e alterando o EIP para o novo endereço
+    offset.ESP.decrement(4);
+    inserirMemoria(offset.ESP, offset.EIP);
+    offset.EIP = END;
+}
+
+void ArquiteturaX86::ret (){
+
+	// Recupera o endereço de retorno da pilha e atualiza o EIP e desempilha o endereço de retorno
+    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]);  
+    offset.EIP = memoria[offset.ESP.toLong()];
+    offset.ESP.increment(4);  
+}
+
+void ArquiteturaX86::iret (){
+
+	 // Recupera o endereço de retorno, atualiza o EIP com o endereço de retorno e desempilha o endereço de retorno
+    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]); 
+    offset.EIP = memoria[offset.ESP.toLong()]; 
+    offset.ESP.increment(4);  
+
+	 // Recupera o CS da pilha, restaura o CS e desempilha o CS
+    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]); 
+    seletores_segmento.CS = memoria[offset.ESP.toLong()];
+    offset.ESP.increment(4);
+
+	 // Recupera as flags, restaura as flags e desempilha as flags
+    acessarMemoria(offset.ESP, memoria[offset.ESP.toLong()]);
+    flag.value = memoria[offset.ESP.toLong()]; 
+    offset.ESP.increment(4);  
+}
+
+void ArquiteturaX86::loop (Endereco<32> &END){
+
+	// Decrementa o ECX e, se não for zero, altera o EIP para repetir o laço
+    gerais.ECX.decrement();  
+    if (gerais.ECX.toLong() != 0)
+        offset.EIP = END;
+}
